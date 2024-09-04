@@ -58,7 +58,7 @@ We welcome contributions to improve the SkillUp platform. Please check our [Cont
 - [GitHub](https://github.com/gitere001)
 - [LinkedIn](https://www.linkedin.com/in/james-gitere/)
 
-### :man: Joseph Mwangi
+### :man: Njenga Mwangi
 - [GitHub](https://github.com/willykar)
 - [LinkedIn](https://www.linkedin.com/in/njenga-mwangi-a58009197/)
 
