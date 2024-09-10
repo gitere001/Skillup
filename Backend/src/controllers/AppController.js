@@ -1,5 +1,5 @@
 // controllers/dbController.js
-import sequelize from '../storage/db.js'; // Import your Sequelize instance
+import sequelize from '../storage/db.js';
 
 // Function to check database connection
 const checkDatabaseConnection = async (req, res) => {
