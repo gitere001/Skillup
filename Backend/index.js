@@ -1,8 +1,11 @@
 import express from 'express';
-import syncDatabase from './src/storage/sychronizeDb';
+import syncDatabase from './src/storage/sychronizeDb.js';
+import userRoutes from './src/routes/authRoutes.js';
 
 const app = express();
 app.use(express.json());
+
+app.use('/', userRoutes)
 
 
 app.get('/', (req, res) => {
@@ -12,7 +15,7 @@ app.get('/', (req, res) => {
 // Start your server after syncing the database
 const startServer = async () => {
   try {
-    await syncDatabase(); // Sync the database
+    await syncDatabase(); 
     app.listen(3000, () => {
       console.log('Server is running on port 3000');
     });
