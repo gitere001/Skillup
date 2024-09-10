@@ -1,2 +1,4 @@
 testDb.js
 .env
+testRedis.js
+dump.rdb

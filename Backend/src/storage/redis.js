@@ -1,38 +1,76 @@
-// storage/redis.js
 import { createClient } from 'redis';
-import { promisify } from 'util';
 
 class RedisClient {
   constructor() {
-    this.client = createClient();
-    this.client.on('error', (err) => console.log(err));
+    this.client = createClient({ url: 'redis://localhost:6379' }); // Adjust URL if needed
     this.connected = false;
+
+    this.client.on('error', (err) => {
+      console.error('Redis error:', err);
+    });
+
     this.client.on('connect', () => {
+      console.log('Redis client connected');
       this.connected = true;
     });
+
+    this.client.on('end', () => {
+      console.log('Redis client disconnected');
+      this.connected = false;
+    });
+
+    this.connect();
   }
+
+  async connect() {
+    if (!this.connected) {
+      try {
+        await this.client.connect();
+      } catch (err) {
+        console.error('Error connecting to Redis:', err);
+      }
+    }
+  }
+
 
   isAlive() {
     return this.connected;
   }
 
+
   async get(key) {
-    const getAsync = promisify(this.client.get).bind(this.client);
-    const val = await getAsync(key);
-    return val;
+    if (!await this.isAlive()) {
+      throw new Error('Redis client is not connected');
+    }
+
+    return this.client.get(key);
   }
 
   async set(key, val, dur) {
-    const setAsync = promisify(this.client.set).bind(this.client);
-    await setAsync(key, val, 'EX', dur);
+    if (!await this.isAlive()) {
+      throw new Error('Redis client is not connected');
+    }
+
+    await this.client.set(key, val, {
+      EX: dur
+    });
   }
 
   async del(key) {
-    const delAsync = promisify(this.client.del).bind(this.client);
-    await delAsync(key);
+    if (!await this.isAlive()) {
+      throw new Error('Redis client is not connected');
+    }
+
+    await this.client.del(key);
+  }
+
+  async disconnect() {
+    if (this.connected) {
+      await this.client.quit();
+    }
   }
 }
 
 const redisClient = new RedisClient();
 
-export default redisClient
+export default redisClient;
