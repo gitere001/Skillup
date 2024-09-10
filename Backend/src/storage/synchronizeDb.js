@@ -1,5 +1,6 @@
-import sequelize from './db';
-import User from '../modules/users';
+import sequelize from './db.js';
+
+import User from '../modules/users.js';
 
 
 const syncDatabase = async () => {
