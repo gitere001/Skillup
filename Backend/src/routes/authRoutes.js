@@ -1,11 +1,11 @@
 import express from 'express';
 import { register } from '../controllers/AuthController.js'
-import checkDatabaseConnection from '../controllers/AppController.js';
+import AppController from '../controllers/AppController.js';
 import validateRegistration from '../middlewares/inputValidation.js';
 
 const router = express.Router()
 
-router.get('/status', checkDatabaseConnection);
+router.get('/status', AppController.getStatus);
 
 //Route for register
 router.post('/register', validateRegistration, register)

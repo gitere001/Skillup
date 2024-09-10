@@ -1,29 +1,32 @@
-// controllers/dbController.js
 import sequelize from '../storage/db.js';
+import redisClient from '../storage/redis.js';
 
-// Function to check database connection
-const checkDatabaseConnection = async (req, res) => {
+const postgresisAlive = async () => {
   try {
-    // Try to authenticate the connection to the PostgreSQL database
     await sequelize.authenticate();
-    console.log('PostgreSQL connected successfully');
-
-    // If connected, return true
-    return res.status(200).json({
-      success: true,
-      message: 'Database is connected',
-      connected: true
-    });
+    return true;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-
-    // If an error occurs, return false
-    return res.status(500).json({
-      success: false,
-      message: 'Database connection failed',
-      connected: false
-    });
+    return false;
   }
-};
+}
 
-export default checkDatabaseConnection;
+class AppController {
+  static async getStatus(req, res) {
+    try {
+      const status = {
+        postgres: await postgresisAlive(),
+        redis: redisClient.isAlive(),
+      };
+
+      res.status(200).json(status);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Error fetching status',
+        error: error.message,
+      });
+    }
+  }
+}
+
+export default AppController;
