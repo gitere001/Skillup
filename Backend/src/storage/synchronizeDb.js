@@ -1,6 +1,8 @@
 import sequelize from './db.js';
 
 import User from '../modules/users.js';
+import Course from '../modules/course.js';
+import Lesson from '../modules/lesson.js';
 
 
 const syncDatabase = async () => {

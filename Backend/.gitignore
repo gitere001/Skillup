@@ -2,3 +2,6 @@ testDb.js
 .env
 testRedis.js
 dump.rdb
+courses/
+src/utils/similarityTest.js
+src/utils/testSimilarity.js
