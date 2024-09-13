@@ -1,5 +1,5 @@
 import express from 'express';
-import { register } from '../controllers/AuthController.js'
+import { register, login} from '../controllers/AuthController.js'
 import AppController from '../controllers/AppController.js';
 import FileController from '../controllers/FileController.js';
 import validateRegistration from '../middlewares/inputValidation.js';
@@ -12,10 +12,13 @@ router.get('/status', AppController.getStatus);
 
 //Route for register
 router.post('/register', validateRegistration, register)
+
+//Route for login
+router.post('/login', login)
+
+//Route for courses
 router.post('/courses', validateCourseCreation, FileController.createNewCourse)
 router.post('/courses/:courseId/lessons', validateLesson, FileController.addLesson)
 
-//Router for login
-//router.login('/login', login)
 
 export default router
