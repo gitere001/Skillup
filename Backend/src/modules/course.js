@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../storage/db.js";
 import { v4 as uuidv4 } from "uuid";
+import Lesson from "./lesson.js";
 
 const categories = [
     'Finance & investment',
@@ -14,7 +15,7 @@ const categories = [
     'Others'
 ];
 
-const Course = sequelize.define("LessionFolder", {
+const Course = sequelize.define("Course", {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -54,6 +55,17 @@ const Course = sequelize.define("LessionFolder", {
 }, {
     timestamps: true,
     tableName: "courses"
+});
+
+Course.hasMany(Lesson, {
+    foreignKey: "courseId",
+    as: "lessons",
+    onDelete: "CASCADE",
+    hooks: true
+});
+Lesson.belongsTo(Course, {
+    foreignKey: "courseId",
+    as: "course",
 });
 
 export default Course;

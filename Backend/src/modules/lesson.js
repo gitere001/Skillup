@@ -1,10 +1,11 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../storage/db.js";
+import { v4 as uuidv4 } from "uuid";
 
 const Lesson = sequelize.define("Lesson", {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: uuidv4,
         primaryKey: true,
         allowNull: false
     },

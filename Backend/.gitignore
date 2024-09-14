@@ -5,3 +5,4 @@ dump.rdb
 courses/
 src/utils/similarityTest.js
 src/utils/testSimilarity.js
+tmp/
