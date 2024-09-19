@@ -1,3 +1,14 @@
+/**
+ * Validates the request body for creating a course.
+ * Checks that the topic field is a non-empty string with a length of at least 3 characters.
+ * Checks that the description field does not exceed 500 characters.
+ * Checks that the category field is one of the following: 'Finance & investment',
+ * 'Business & Entrepreneurship', 'Technology & programming', 'Agriculture',
+ * 'Education', 'Health & wellness', 'Legal & Regulatory', 'Personal Development',
+ * or 'Others'.
+ * If validation fails, sends a 400 response with an appropriate error message.
+ * Otherwise, calls `next()` to proceed to the next middleware/controller.
+ */
 const validateCourseCreation = (req, res, next) => {
     const { topic, description, category } = req.body;
 

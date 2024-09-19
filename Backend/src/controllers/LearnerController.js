@@ -8,6 +8,12 @@ import Lesson from "../modules/lesson.js";
 import { Op } from "sequelize";
 
 class LearnerController {
+	/**
+	 * Returns a welcome note for the authenticated learner.
+	 * @param {Object} req - The request object containing headers.
+	 * @param {Object} res - The response object.
+	 * @returns {Object} - JSON response with the welcome note or an error.
+	 */
 	static async getWelcomeNote(req, res) {
 		try {
 			const user = await FileController.getUser(req);
@@ -21,6 +27,12 @@ class LearnerController {
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+	/**
+	 * Fetches the available courses that are approved and can be purchased.
+	 * @param {Object} req - The request object containing query parameters.
+	 * @param {Object} res - The response object.
+	 * @returns {Object} - JSON response containing the list of available courses, hasMore flag, limit, and offset, or an error.
+	 */
 	static async getAvailableCourses(req, res) {
 
 
@@ -52,6 +64,15 @@ class LearnerController {
 
 	}
 }
+        /**
+         * Searches for courses by topic and returns a list of courses that are approved and match the search query.
+         * @param {Object} req - The request object containing query parameters.
+         * @param {string} req.query.query - The search query to filter courses by topic.
+         * @param {string} req.query.limit - The limit of courses to fetch. Defaults to 10.
+         * @param {string} req.query.offset - The offset of courses to fetch. Defaults to 0.
+         * @param {Object} res - The response object.
+         * @returns {Object} - JSON response containing the list of courses, hasMore flag, limit, and offset, or an error.
+         */
 static async searchCourse(req, res) {
     const user = await FileController.getUser(req);
     if (!user) {
@@ -83,6 +104,12 @@ static async searchCourse(req, res) {
         return res.status(500).json({ error: 'An error occurred while searching courses.' });
     }
 }
+        /**
+         * Fetches the list of courses purchased by the authenticated user.
+         * @param {Object} req - The request object containing headers.
+         * @param {Object} res - The response object.
+         * @returns {Object} - JSON response containing the list of purchased courses, or an error.
+         */
 static async getLearnerPurchasedCourses(req, res) {
 	const user = await FileController.getUser(req);
 	if (!user) {
@@ -109,7 +136,17 @@ static async getLearnerPurchasedCourses(req, res) {
 
 	}
 }
-static getLessonsBasedOnCourseId = async (req, res) => {
+
+        /**
+         * Fetches the list of lessons for a given course ID.
+         * @param {Object} req - The request object containing parameters.
+         * @param {Object} res - The response object.
+         * @returns {Object} - JSON response containing the list of lessons, or an error.
+         * @throws {Unauthorized} - If the user is not an authenticated learner.
+         * @throws {BadRequest} - If the course ID is not provided or is invalid.
+         * @throws {InternalServerError} - If there is an error fetching the lessons.
+         */
+static async getLessonsBasedOnCourseId (req, res) {
 
 	const user = await FileController.getUser(req);
 	if (!user) {

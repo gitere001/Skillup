@@ -1,5 +1,14 @@
 import { validate as isUuid } from 'uuid';
 
+/**
+ * Validates the request body and parameters for adding a lesson to a course.
+ * Validates that:
+ * - courseId is a valid UUID
+ * - title is provided
+ * - at least one of video or content files is provided
+ * If validation fails, returns a 400 response with an error message.
+ * Otherwise, calls `next()` to proceed to the next middleware/controller.
+ */
 const validateLesson = (req, res, next) => {
     const { title, description } = req.body; // Access form fields from req.body
     const { video, content } = req.files; // Access files from req.files

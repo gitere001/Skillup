@@ -1,3 +1,17 @@
+/**
+ * Validates the request body and parameters for user registration.
+ * Validates that:
+ * - firstName and lastName are provided and not empty
+ * - email is provided and in a valid format
+ * - password is provided and in a valid format (at least 8 characters long and include at least one uppercase letter, one number, and one special character)
+ * - password and password2 match
+ * - role is provided and is either 'learner' or 'expert'
+ * - if role is 'expert', paymentMethod is provided and is either 'bank' or 'mpesa'
+ * - if paymentMethod is 'bank', bankName is provided and is one of 'cooperative', 'absa', 'kcb', or 'equity', and bankAccountNumber is provided
+ * - if paymentMethod is 'mpesa', mpesaNumber is provided
+ * If validation fails, returns a 400 response with an error message.
+ * Otherwise, calls `next()` to proceed to the next middleware/controller.
+ */
 const validateRegistration = (req, res, next) => {
 	const {
 	  firstName,

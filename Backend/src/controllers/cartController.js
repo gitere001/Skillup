@@ -8,6 +8,12 @@ import processPayment from '../utils/processPayment.js';
 import { validate as isUuid } from 'uuid';
 import { processExpertOrders } from '../utils/expertOrderProcessor.js';
 
+/**
+ * Adds a course to the user's cart.
+ * @param {Object} req - The request object containing parameters.
+ * @param {Object} res - The response object.
+ * @returns {Object} - JSON response with new cart item or an error.
+ */
 export const addToCart = async (req, res) => {
     try {
         const user = await FileController.getUser(req);
@@ -41,6 +47,12 @@ export const addToCart = async (req, res) => {
     }
 };
 
+/**
+ * Fetches the cart items for the authenticated user and returns a JSON response with the cart items.
+ * @param {Object} req - The request object containing headers.
+ * @param {Object} res - The response object.
+ * @returns {Object} - JSON response with the cart items or an error.
+ */
 export const viewCart = async (req, res) => {
     try {
         // Get the user from the request
@@ -68,6 +80,12 @@ export const viewCart = async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while retrieving the cart.' });
     }
 };
+/**
+ * Removes a course from the authenticated user's cart.
+ * @param {Object} req - The request object containing parameters.
+ * @param {Object} res - The response object.
+ * @returns {Object} - JSON response with success message or an error.
+ */
 export const removeFromCart = async (req, res) => {
     try {
         const user = await FileController.getUser(req);
@@ -94,6 +112,12 @@ export const removeFromCart = async (req, res) => {
     }
 };
 
+/**
+ * Creates an order and processes payment for the given course(s).
+ * @param {Object} req - The request object containing the course ID or 'fromCart' flag.
+ * @param {Object} res - The response object.
+ * @returns {Object} - JSON response with the order ID, total amount, and message, or an error.
+ */
 export const checkout = async (req, res) => {
     try {
         const user = await FileController.getUser(req);
@@ -174,6 +198,17 @@ export const checkout = async (req, res) => {
     }
 };
 
+        /**
+         * Processes an order after payment confirmation.
+         * The request body should contain the order ID and a boolean 'paid' flag.
+         * If the order is found and the flag is true, the order is updated to 'completed',
+         * and the purchased courses are added to the user's purchased courses.
+         * If the flag is false, the order is updated to 'canceled'.
+         * In case of any errors, a 500 status is returned with an error message.
+         * @param {Object} req - The request object containing the order ID and paid flag.
+         * @param {Object} res - The response object.
+         * @returns {Object} - JSON response with a success message or an error.
+         */
 export const processOrder = async (req, res) => {
     try {
         const { orderId, paid } = req.body; // Extract both from request body

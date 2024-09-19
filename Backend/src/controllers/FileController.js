@@ -10,6 +10,11 @@ import welcomeNote from '../utils/customWelcome.js';
 import ExpertPurchasedCourse from '../modules/expertPurchasedCourses.js';
 
 class FileController {
+    /**
+     * Retrieves the user object from the request header token.
+     * @param {Object} req - The request object containing headers.
+     * @returns {Promise<Object|null>} - Returns a user object if found, otherwise null.
+     */
     static async getUser(req) {
         const token = req.header('X-Token');
         const key = `auth_${token}`;
@@ -25,6 +30,11 @@ class FileController {
         }
         return user;
     }
+    /**
+     * Retrieves the expert object from the request header token.
+     * @param {Object} req - The request object containing headers.
+     * @returns {Promise<Object|null>} - Returns an expert object if found, otherwise null.
+     */
     static async getExpert(req) {
         const token = req.header('X-Token');
         const key = `auth_${token}`;
@@ -40,6 +50,12 @@ class FileController {
         }
         return expert;
     }
+    /**
+     * Returns a welcome note for the authenticated expert.
+     * @param {Object} req - The request object containing headers.
+     * @param {Object} res - The response object.
+     * @returns {Object} - JSON response with the welcome note or an error.
+     */
     static async getWelcomeNote(req, res) {
 		try {
 			const expert = await FileController.getExpert(req);
@@ -55,6 +71,12 @@ class FileController {
     }
 
 
+    /**
+     * Creates a new course for the authenticated expert.
+     * @param {Object} req - The request object containing headers and body.
+     * @param {Object} res - The response object.
+     * @returns {Object} - JSON response with the course ID or an error.
+     */
     static async createNewCourse(req, res) {
         const expert = await FileController.getExpert(req);
         if (!expert) {
@@ -91,6 +113,12 @@ class FileController {
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+        /**
+         * Creates a new lesson for a course.
+         * @param {Object} req - The request object containing headers, body, and params.
+         * @param {Object} res - The response object.
+         * @returns {Object} - JSON response with the new lesson ID or an error.
+         */
     static async addLesson(req, res) {
         try {
             // Ensure the user is authenticated
@@ -149,6 +177,13 @@ class FileController {
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+        /**
+         * Updates a lesson given the course ID and lesson ID.
+         * Requires authentication, and the course must be in 'draft' or 'rejected' status.
+         * @param {Object} req - The request object containing parameters.
+         * @param {Object} res - The response object.
+         * @returns {Object} - JSON response with success message or an error.
+         */
     static async updateLesson(req, res) {
         try {
             // Ensure the user is authenticated
@@ -215,6 +250,12 @@ class FileController {
     }
 
 
+    /**
+     * Returns all courses for the authenticated expert.
+     * @param {Object} req - The request object containing headers.
+     * @param {Object} res - The response object.
+     * @returns {Object} - JSON response with courses or an error.
+     */
     static async getExpertCourses(req, res) {
         const expert = await FileController.getExpert(req);
         if (!expert) {
@@ -224,6 +265,12 @@ class FileController {
         const courses = await Course.findAll({ where: { expertId: expert.id } });
         return res.status(200).json({ courses });
     }
+    /**
+     * Returns all courses that have been purchased by learners for the authenticated expert.
+     * @param {Object} req - The request object containing headers.
+     * @param {Object} res - The response object.
+     * @returns {Object} - JSON response with courses or an error.
+     */
     static async getExpertPaidCourses(req, res) {
         try {
             const expert = await FileController.getExpert(req);
@@ -242,6 +289,12 @@ class FileController {
         }
     }
 
+    /**
+     * Deletes a lesson from a course.
+     * @param {Object} req - The request object containing headers and parameters.
+     * @param {Object} res - The response object.
+     * @returns {Object} - JSON response with success message or an error.
+     */
     static async deleteLesson(req, res) {
         const expert = await FileController.getExpert(req);
         if (!expert) {
@@ -281,6 +334,12 @@ class FileController {
 
         return res.status(200).json({ message: 'Lesson deleted successfully' });
     }
+    /**
+     * Fetches lessons associated with the given course ID.
+     * @param {Object} req - The request object containing parameters.
+     * @param {Object} res - The response object.
+     * @returns {Object} - JSON response with the lessons or an error.
+     */
     static async getLessonsByCourse(req, res) {
         const expert = await FileController.getExpert(req);
         if (!expert) {
@@ -307,6 +366,14 @@ class FileController {
 
         return res.status(200).json({ lessons });
     }
+    /**
+     * Submits a course for review.
+     * @param {Object} req - The request object containing parameters.
+     * @param {Object} res - The response object.
+     * @returns {Object} - JSON response with success message or an error.
+     * @throws {Unauthorized} - If the user is not an expert.
+     * @throws {NotFound} - If the course is not found.
+     */
     static async submitCourse(req, res) {
         const expert = await FileController.getExpert(req);
         if (!expert) {
@@ -322,6 +389,16 @@ class FileController {
         return res.status(200).json({ message: 'Course submitted successfully' });
     }
 
+    /**
+     * Deletes a course.
+     * @param {Object} req - The request object containing parameters.
+     * @param {Object} res - The response object.
+     * @returns {Object} - JSON response with success message or an error.
+     * @throws {Unauthorized} - If the user is not an expert.
+     * @throws {NotFound} - If the course is not found.
+     * @throws {Forbidden} - If the course is not in draft or rejected status.
+     * @throws {InternalServerError} - If there is an error deleting the course folder.
+     */
     static async deleteCourse(req, res) {
         const expert = await FileController.getExpert(req);
         if (!expert) {
