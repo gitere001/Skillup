@@ -26,7 +26,7 @@ const Course = sequelize.define("Course", {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-            model: "users",
+            model: "experts",
             key: "id"
         }
     },
@@ -48,8 +48,13 @@ const Course = sequelize.define("Course", {
         allowNull: true
 
     },
+    price: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
 	status: {
-		type: DataTypes.ENUM('draft', 'submitted', 'reviewed', 'rejected'),
+		type: DataTypes.ENUM('draft', 'pending approval', 'approved', 'rejected'),
 		defaultValue: 'draft'
 	  }
 }, {

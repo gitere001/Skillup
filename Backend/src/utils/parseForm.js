@@ -1,25 +1,20 @@
-import formidable from 'formidable';
+import multer from 'multer';
 import path from 'path';
 
-const parseForm = (req, res, next) => {
-    const form = formidable({
-        uploadDir: path.join(path.resolve(), 'tmp'),
-        keepExtensions: true
-    });
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(path.resolve(), 'tmp'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
+});
 
-    form.parse(req, (err, fields, files) => {
-        if (err) {
-            console.error('Error parsing form data:', err);
-            return res.status(500).json({ error: 'Internal server error' });
-        }
+const upload = multer({ storage });
 
-        console.log('Parsed fields:', fields);
-        console.log('Parsed files:', files);
+const uploadFiles = upload.fields([
+    { name: 'video', maxCount: 1 },
+    { name: 'content', maxCount: 1 }
+]);
 
-        req.fields = fields;
-        req.files = files;
-        next();
-    });
-};
-
-export default parseForm;
+export default uploadFiles;

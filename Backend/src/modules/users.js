@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.UUID,
-    defaultValue: DataTypes.uuidv4,
+    defaultValue: uuidv4,
     primaryKey: true
   },
   firstName: {
@@ -26,12 +26,13 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   role: {
-    type: DataTypes.ENUM('learner', 'instructor'),
+    type: DataTypes.STRING,
+    defaultValue: 'learner',
     allowNull: false
   },
 }, {
   timestamps: true,
-  tableName: 'users'
+  tableName: 'learners'
 });
 
 export default User;

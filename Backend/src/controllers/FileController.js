@@ -1,10 +1,13 @@
 import { promises as fs, readFile } from 'fs';
 import path from 'path';
 import User from '../modules/users.js';
+import Expert from '../modules/expert.js';
 import Course from '../modules/course.js';
 import Lesson from '../modules/lesson.js';
 import redisClient from '../storage/redis.js';
 import { validate as isUuid } from 'uuid';
+import welcomeNote from '../utils/customWelcome.js';
+import ExpertPurchasedCourse from '../modules/expertPurchasedCourses.js';
 
 class FileController {
     static async getUser(req) {
@@ -22,27 +25,57 @@ class FileController {
         }
         return user;
     }
+    static async getExpert(req) {
+        const token = req.header('X-Token');
+        const key = `auth_${token}`;
+        const expertId = await redisClient.get(key);
+
+        if (!expertId) {
+            return null;
+        }
+
+        const expert = await Expert.findOne({ where: { id: expertId } });
+        if (!expert) {
+            return null;
+        }
+        return expert;
+    }
+    static async getWelcomeNote(req, res) {
+		try {
+			const expert = await FileController.getExpert(req);
+			if (!expert) {
+				return res.status(401).json({ error: 'Unauthorized' });
+			}
+			const response = await welcomeNote(expert)
+			return res.status(200).json({ response });
+        } catch (error) {
+            console.error('Error fetching welcome note:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
 
     static async createNewCourse(req, res) {
-        const user = await FileController.getUser(req);
-        if (!user) {
+        const expert = await FileController.getExpert(req);
+        if (!expert) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const { topic, description, category } = req.body;
+        const { topic, description, category, price } = req.body;
 
         const existingCourse = await Course.findOne({
-            where: { expertId: user.id, topic, category, status: 'draft' }
+            where: { expertId: expert.id, topic, category, status: 'draft' }
         });
         if (existingCourse) {
             return res.status(409).json({ error: 'Course already exists' });
         }
 
         const newCourse = await Course.create({
-            expertId: user.id,
+            expertId: expert.id,
             topic,
             description,
             category,
+            price,
             coursePath: null,
             status: 'draft'
         });
@@ -61,22 +94,18 @@ class FileController {
     static async addLesson(req, res) {
         try {
             // Ensure the user is authenticated
-            const user = await FileController.getUser(req);
-            if (!user) {
+            const expert = await FileController.getExpert(req);
+            if (!expert) {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
 
             // Extract fields and files
-            const { title, description } = req.fields;
+            const { title, description } = req.body;
             const { courseId } = req.params;
             const files = req.files;
 
-            // Convert title and description to strings if they're arrays
-            const titleStr = Array.isArray(title) ? title[0] : title;
-            const descriptionStr = Array.isArray(description) ? description[0] : description;
-
             // Find the course
-            const course = await Course.findOne({ where: { id: courseId, expertId: user.id } });
+            const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
             if (!course) {
                 return res.status(404).json({ error: 'Course not found' });
             }
@@ -84,8 +113,8 @@ class FileController {
             // Create the lesson
             const newLesson = await Lesson.create({
                 courseId,
-                title: titleStr,
-                description: descriptionStr || null,
+                title,
+                description: description || null,
                 contentPath: null,
                 videoPath: null
             });
@@ -95,22 +124,19 @@ class FileController {
             await fs.mkdir(lessonPath, { recursive: true });
 
             // Handle content file if provided
-            if (files.content) {
-                const originalFilename = files.content[0].originalFilename;
-
-                const filePath = files.content[0].filepath;
+            if (files.content && files.content.length > 0) {
+                const originalFilename = files.content[0].originalname;
+                const filePath = files.content[0].path;
                 const contentPath = path.join(lessonPath, originalFilename);
                 await fs.rename(filePath, contentPath);
                 newLesson.contentPath = path.join('courses', courseId, newLesson.id.toString(), originalFilename);
-
             }
 
             // Handle video file if provided
-            if (files.video) {
+            if (files.video && files.video.length > 0) {
                 const videoPath = path.join(lessonPath, 'video.mp4');
-                await fs.rename(files.video[0].filepath, videoPath);
+                await fs.rename(files.video[0].path, videoPath);
                 newLesson.videoPath = path.join('courses', courseId, newLesson.id.toString(), 'video.mp4');
-
             }
 
             // Save the updated lesson
@@ -123,27 +149,109 @@ class FileController {
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+    static async updateLesson(req, res) {
+        try {
+            // Ensure the user is authenticated
+            const expert = await FileController.getExpert(req);
+            if (!expert) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
+
+            const { courseId, lessonId } = req.params;
+            const { title, description, removeContent, removeVideo } = req.body; // Flags for file removal
+
+            // Check if the course exists and belongs to the user
+            const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
+            if (!course) {
+                return res.status(404).json({ error: 'Course not found' });
+            }
+
+            // Ensure the course is in 'draft' or 'rejected' status
+            if (course.status !== 'draft' && course.status !== 'rejected') {
+                return res.status(403).json({ error: 'Lesson can only be updated while the course is in draft or rejected status.' });
+            }
+
+            const lesson = await Lesson.findOne({ where: { id: lessonId, courseId } });
+            if (!lesson) {
+                return res.status(404).json({ error: 'Lesson not found' });
+            }
+
+            // Update title and description if provided
+            if (title) {
+                lesson.title = title;
+            }
+            if (description !== undefined) {
+                lesson.description = description;
+            }
+
+            const lessonPath = path.join(path.resolve(), 'courses', courseId, lessonId.toString());
+
+            // Remove content if 'removeContent' flag is set
+            if (removeContent && lesson.contentPath) {
+                const contentFilePath = path.join(path.resolve(), lesson.contentPath);
+                if (await fs.stat(contentFilePath).catch(() => false)) {
+                    await fs.unlink(contentFilePath); // Remove the content file
+                }
+                lesson.contentPath = null; // Clear the path in the database
+            }
+
+            // Remove video if 'removeVideo' flag is set
+            if (removeVideo && lesson.videoPath) {
+                const videoFilePath = path.join(path.resolve(), lesson.videoPath);
+                if (await fs.stat(videoFilePath).catch(() => false)) {
+                    await fs.unlink(videoFilePath); // Remove the video file
+                }
+                lesson.videoPath = null; // Clear the path in the database
+            }
+
+            // Save the updated lesson
+            await lesson.save();
+
+            return res.status(200).json({ message: 'Lesson updated successfully'});
+        } catch (error) {
+            console.error('Error updating lesson:', error);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
 
 
-    static async getUserCourses(req, res) {
-        const user = await FileController.getUser(req);
-        if (!user) {
+    static async getExpertCourses(req, res) {
+        const expert = await FileController.getExpert(req);
+        if (!expert) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const courses = await Course.findAll({ where: { expertId: user.id } });
+        const courses = await Course.findAll({ where: { expertId: expert.id } });
         return res.status(200).json({ courses });
     }
+    static async getExpertPaidCourses(req, res) {
+        try {
+            const expert = await FileController.getExpert(req);
+            if (!expert) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
+
+            const courses = await ExpertPurchasedCourse.findAll({
+                where: { expertId: expert.id }
+            });
+
+            return res.status(200).json({ courses });
+        } catch (error) {
+            console.error('Error fetching expert paid courses:', error);
+            return res.status(500).json({ error: 'An error occurred while fetching expert paid courses.' });
+        }
+    }
+
     static async deleteLesson(req, res) {
-        const user = await FileController.getUser(req);
-        if (!user) {
+        const expert = await FileController.getExpert(req);
+        if (!expert) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
         const { courseId, lessonId } = req.params;
 
         // Find the course and check if it exists and is in draft status
-        const course = await Course.findOne({ where: { id: courseId, expertId: user.id, status: 'draft' } });
+        const course = await Course.findOne({ where: { id: courseId, expertId: expert.id, status: 'draft' } });
         if (!course) {
             return res.status(404).json({ error: 'Course not found or not in draft status' });
         }
@@ -174,15 +282,15 @@ class FileController {
         return res.status(200).json({ message: 'Lesson deleted successfully' });
     }
     static async getLessonsByCourse(req, res) {
-        const user = await FileController.getUser(req);
-        if (!user) {
+        const expert = await FileController.getExpert(req);
+        if (!expert) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
         const { courseId } = req.params;
 
         // Check if the course exists and belongs to the user
-        const course = await Course.findOne({ where: { id: courseId, expertId: user.id } });
+        const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
         if (!course) {
             return res.status(404).json({ error: 'Course not found' });
         }
@@ -190,7 +298,7 @@ class FileController {
         // Fetch lessons associated with the course
         const lessons = await Lesson.findAll({
              where: { courseId },
-             order: [['createdAt', 'ASC']]
+             order: [['createdAt', 'DESC']],
             });
 
         if (!lessons.length) {
@@ -199,87 +307,29 @@ class FileController {
 
         return res.status(200).json({ lessons });
     }
-    static async updateLesson(req, res) {
-        const user = await FileController.getUser(req);
-        if (!user) {
+    static async submitCourse(req, res) {
+        const expert = await FileController.getExpert(req);
+        if (!expert) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-
-        const { courseId, lessonId } = req.params;
-        const { title, description, content } = req.fields;
-        const files = req.files;
-
-        // Check if the course exists and belongs to the user
-        const course = await Course.findOne({ where: { id: courseId, expertId: user.id } });
+        const courseId = req.params.courseId;
+        const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
         if (!course) {
             return res.status(404).json({ error: 'Course not found' });
         }
-
-        // Ensure the course is in 'draft' status
-        if (course.status !== 'draft') {
-            return res.status(403).json({ error: 'Lesson can only be updated while the course is in draft status.' });
-        }
-
-        // Check if the lesson exists
-        const lesson = await Lesson.findOne({ where: { id: lessonId, courseId } });
-        if (!lesson) {
-            return res.status(404).json({ error: 'Lesson not found' });
-        }
-
-        const lessonPath = path.join(path.resolve(), 'courses', courseId, lessonId);
-
-        // Update title and description if provided
-        if (title) {
-            lesson.title = title;
-        }
-        if (description !== undefined) {
-            lesson.description = description;
-        }
-
-        // Update content if provided
-        if (content) {
-            const contentFilePath = path.join(lessonPath, 'content.md');
-            await fs.writeFile(contentFilePath, content);
-            lesson.contentPath = contentFilePath.replace(`${path.resolve()}/`, '');
-        } else if (lesson.contentPath && content === null) {
-            // Remove content if null is sent
-            const contentFilePath = path.join(lessonPath, 'content.md');
-            if (await fs.stat(contentFilePath).catch(() => false)) {
-                await fs.unlink(contentFilePath);
-            }
-            lesson.contentPath = null;
-        }
-
-        // Update video if provided
-        if (files && files.video) {
-            const videoFilePath = path.join(lessonPath, 'video.mp4');
-            if (lesson.videoPath && (await fs.stat(path.join(path.resolve(), lesson.videoPath)).catch(() => false))) {
-                await fs.unlink(path.join(path.resolve(), lesson.videoPath)); // Remove old video file
-            }
-            await fs.rename(files.video.path, videoFilePath);
-            lesson.videoPath = videoFilePath.replace(`${path.resolve()}/`, '');
-        } else if (lesson.videoPath && files && files.video === null) {
-            // Remove video if null is sent
-            const videoFilePath = path.join(lessonPath, 'video.mp4');
-            if (await fs.stat(videoFilePath).catch(() => false)) {
-                await fs.unlink(videoFilePath);
-            }
-            lesson.videoPath = null;
-        }
-
-        // Save the updated lesson
-        await lesson.save();
-
-        return res.status(200).json({ message: 'Lesson updated successfully', lesson });
+        course.status = 'pending approval';
+        await course.save();
+        return res.status(200).json({ message: 'Course submitted successfully' });
     }
+
     static async deleteCourse(req, res) {
-        const user = await FileController.getUser(req);
-        if (!user) {
+        const expert = await FileController.getExpert(req);
+        if (!expert) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
         const { courseId } = req.params;
-        const course = await Course.findOne({ where: { id: courseId, expertId: user.id } });
+        const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
         if (!course) {
             return res.status(404).json({ error: 'Course not found' });
         }

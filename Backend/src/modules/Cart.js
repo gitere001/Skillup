@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize"
-import sequelize from "../storage/db"
-import user from "./users"
-//import video from './video.js
+import sequelize from "../storage/db.js"
+import User from "./users.js"
+import Course from "./course.js"
 
 const Cart = sequelize.define('Cart', {
     id : {
@@ -10,14 +10,32 @@ const Cart = sequelize.define('Cart', {
         primaryKey: true,
 
     },
-    quantity: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1,
-    }
-})
+    userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: 'learners',
+            key: 'id'
+        }
 
-//relationship between users and videos
-Cart.belongsTo(user)
-Cart.belongsTo(Video)
+    },
+    courseId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: 'courses',
+            key: 'id'
+        }
+    },
+}, { timestamps: true,
+    tableName: 'carts'
+ });
+
+User.hasMany(Cart, { foreignKey: 'userId' });
+Cart.belongsTo(User, { foreignKey: 'userId' });
+
+Course.hasMany(Cart, { foreignKey: 'courseId' });
+Cart.belongsTo(Course, { foreignKey: 'courseId' });
+
 
 export default Cart

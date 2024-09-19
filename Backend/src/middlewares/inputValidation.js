@@ -1,8 +1,20 @@
 const validateRegistration = (req, res, next) => {
-	const { firstName, lastName, email, password, password2, role } = req.body;
+	const {
+	  firstName,
+	  lastName,
+	  email,
+	  password,
+	  password2,
+	  role,
+	  paymentMethod,
+	  bankName,
+	  bankAccountNumber,
+	  mpesaNumber
+	} = req.body;
+
 	const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}/;
 	const emailRegex = /^[a-zA-Z0-9._+/-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$/;
-	const validRoles = ['learner', 'instructor'];
+	const validRoles = ['learner', 'expert'];
 
 	if (!firstName || firstName.trim() === '') {
 	  return res.status(400).json({ error: 'First name is required' });
@@ -32,7 +44,27 @@ const validateRegistration = (req, res, next) => {
 	  return res.status(400).json({ error: 'Role is required' });
 	}
 	if (!validRoles.includes(role)) {
-	  return res.status(400).json({ error: 'Invalid role. Must be "learner" or "instructor"' });
+	  return res.status(400).json({ error: 'Invalid role. Must be "learner" or "expert"' });
+	}
+
+	if (role === 'expert') {
+	  if (!paymentMethod || paymentMethod.trim() === '') {
+		return res.status(400).json({ error: 'Payment method is required for experts' });
+	  }
+	  if (paymentMethod === 'bank') {
+		if (!bankName || !['cooperative', 'absa', 'kcb', 'equity'].includes(bankName)) {
+		  return res.status(400).json({ error: 'Invalid or missing bank name for bank payment method' });
+		}
+		if (!bankAccountNumber || bankAccountNumber.trim() === '') {
+		  return res.status(400).json({ error: 'Bank account number is required for bank payment method' });
+		}
+	  } else if (paymentMethod === 'mpesa') {
+		if (!mpesaNumber || mpesaNumber.trim() === '') {
+		  return res.status(400).json({ error: 'MPesa number is required for MPesa payment method' });
+		}
+	  } else {
+		return res.status(400).json({ error: 'Invalid payment method. Must be "bank" or "mpesa"' });
+	  }
 	}
 
 	next();

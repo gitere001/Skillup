@@ -1,16 +1,12 @@
 import express from 'express'
-import {addToCart, viewCart, removeFromCart } from '../controllers/cartController'
-import authMiddleware from '../middlewares/authMiddleware'
+import { addToCart, viewCart, removeFromCart, checkout, processOrder} from '../controllers/cartController.js';
 
-const router = express.Router()
+const cartRouter = express.Router()
 
-//Route to add a video to the cart
-router.post('/add', authMiddleware, addToCart)
+cartRouter.post('/cart/:courseId', addToCart);
+cartRouter.get('/cart', viewCart);
+cartRouter.delete('/cart/:courseId', removeFromCart);
+cartRouter.post('/checkout', checkout);
+cartRouter.post('/process-order', processOrder);
 
-//Route to view the cart
-router.get('/view', authMiddleware, viewCart)
-
-//Route to remove a video
-router.get('/remove', authMiddleware, removeFromCart)
-
-export default router
+export default cartRouter
