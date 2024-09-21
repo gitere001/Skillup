@@ -16,7 +16,7 @@ const sequelize = new Sequelize({
   (async () => {
 	try {
 		await sequelize.authenticate()
-		console.log('Connection has been established successfully')
+		console.log('Connected to pstgreSQl database')
 	} catch (error) {
 		console.error('Unable to connect to pstgreSQl database')
 	}

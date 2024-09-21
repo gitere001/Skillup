@@ -2,6 +2,7 @@ import Admin from "../modules/admin.js";
 import Course from "../modules/course.js";
 import { validate as isUuid } from "uuid";
 import redisClient from "../storage/redis.js";
+import welcomeNote from "../utils/customWelcome.js";
 
 /**
  * CourseReviewController class to manage course reviews and approvals.
