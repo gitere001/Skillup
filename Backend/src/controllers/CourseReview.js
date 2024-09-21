@@ -104,8 +104,8 @@ class CourseReviewController {
             if (!course) {
                 return res.status(404).json({ error: 'Course not found' });
             }
-            if (course.status !== 'pending approval') {
-                return res.status(400).json({ error: 'Course status is not pending approval' });
+            if (course.status === 'approved') {
+                return res.status(400).json({ error: 'Course already approved' });
             }
 
             course.status = 'approved';
@@ -142,8 +142,8 @@ class CourseReviewController {
             if (!course) {
                 return res.status(404).json({ error: 'Course not found' });
             }
-            if (course.status !== 'pending approval') {
-                return res.status(400).json({ error: 'Course status is not pending approval' });
+            if (course.status === 'approved') {
+                return res.status(400).json({ error: 'Course is already approved' });
             }
 
             course.status = 'rejected';

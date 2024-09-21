@@ -8,6 +8,8 @@ import redisClient from '../storage/redis.js';
 import { validate as isUuid } from 'uuid';
 import welcomeNote from '../utils/customWelcome.js';
 import ExpertPurchasedCourse from '../modules/expertPurchasedCourses.js';
+import { areSimilar } from '../utils/similarityTest.js';
+import { title } from 'process';
 
 class FileController {
     /**
@@ -85,10 +87,16 @@ class FileController {
 
         const { topic, description, category, price } = req.body;
 
-        const existingCourse = await Course.findOne({
-            where: { expertId: expert.id, topic, category, status: 'draft' }
-        });
-        if (existingCourse) {
+        const existingCourses = await Course.findAll({
+            where: {
+                expertId: expert.id,
+                status: 'draft'
+            },
+            attributes: ['topic']
+         });
+         const availableTopics = existingCourses.map(course => course.topic);
+         const topicExists = availableTopics.some(t => areSimilar(t, topic));
+        if (topicExists) {
             return res.status(409).json({ error: 'Course already exists' });
         }
 
@@ -98,15 +106,12 @@ class FileController {
             description,
             category,
             price,
-            coursePath: null,
             status: 'draft'
         });
         const folderPath = path.join(path.resolve(), 'courses', newCourse.id.toString());
 
         try {
             await fs.mkdir(folderPath, { recursive: true });
-            newCourse.coursePath = folderPath;
-            await newCourse.save();
             return res.status(201).json({ courseId: newCourse.id });
         } catch (err) {
             console.error('Error creating folder:', err);
@@ -132,10 +137,19 @@ class FileController {
             const { courseId } = req.params;
             const files = req.files;
 
-            // Find the course
             const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
             if (!course) {
                 return res.status(404).json({ error: 'Course not found' });
+            }
+            if (course.status !== 'draft' && course.status !== 'rejected') {
+                return res.status(400).json({ error: 'Course is not in draft or rejected status' });
+            }
+
+            const availableLessons = await Lesson.findAll({ where: { courseId } });
+            const availableTitles = availableLessons.map(lesson => lesson.title);
+            const titleExists = availableTitles.some(t => areSimilar(t, title));
+            if (titleExists) {
+                return res.status(409).json({ error: 'Lesson already exists' });
             }
 
             // Create the lesson
@@ -306,7 +320,10 @@ class FileController {
         // Find the course and check if it exists and is in draft status
         const course = await Course.findOne({ where: { id: courseId, expertId: expert.id, status: 'draft' } });
         if (!course) {
-            return res.status(404).json({ error: 'Course not found or not in draft status' });
+            return res.status(404).json({ error: 'Course not found' });
+        }
+        if (course.status !== 'draft' && course.status !== 'rejected') {
+            return res.status(403).json({ error: 'Lesson cannot be deleted. Not in draft or rejected status' });
         }
 
         if (!isUuid(lessonId)) {
@@ -383,6 +400,16 @@ class FileController {
         const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
         if (!course) {
             return res.status(404).json({ error: 'Course not found' });
+        }
+        const courseLessons = await Lesson.findAll({ where: { courseId } });
+        if (courseLessons.length === 0) {
+            return res.status(400).json({ error: 'Course must have at least one lesson' });
+        }
+        if (course.status === 'approved') {
+            return res.status(403).json({ error: 'Course already approved' });
+        }
+        if (course.status === 'pending approval') {
+            return res.status(403).json({ error: 'Course already submitted' });
         }
         course.status = 'pending approval';
         await course.save();

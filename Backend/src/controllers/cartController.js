@@ -39,7 +39,9 @@ export const addToCart = async (req, res) => {
         }
 
         const newCart = await Cart.create({ userId: user.id, courseId });
-        return res.status(201).json({ newCart });
+        return res.status(201).json({ success: 'Course added to cart',
+            cartId: newCart.id
+         });
 
     } catch (error) {
         console.error('Error adding course to cart:', error);
@@ -216,14 +218,12 @@ export const processOrder = async (req, res) => {
         if (typeof paid !== 'boolean') {
             return res.status(400).json({ error: 'Invalid paid flag' });
         }
-        console.log('orderId:', orderId, 'paid:', paid);
 
         // Fetch the order to process
         const order = await Order.findByPk(orderId);
         if (!order) {
             return res.status(404).json({ error: 'Order not found' });
         }
-        console.log('order:', order);
 
         // Check if the order is already completed or failed
         if (order.status !== 'pending') {
@@ -253,7 +253,7 @@ export const processOrder = async (req, res) => {
                     purchaseDate: new Date()
                 })
             ));
-            console.log('purchased courses:', order.courseIds);
+
 
             await processExpertOrders(order);
 

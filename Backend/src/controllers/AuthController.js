@@ -86,63 +86,37 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password, role } = req.body;
 
+  let user;
   if (role === 'admin') {
-    const admin = await Admin.findOne({ where: { email } });
-    if (!admin) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-    const token = uuidv4();
-    const key = `auth_${token}`;
-    await redisClient.set(key, admin.id, 7200);
-    res.status(200).json({
-      message: 'Login successful',
-      adminId: admin.id,
-      'X-Token': token
-    });
+    user = await Admin.findOne({ where: { email } });
+  } else if (role === 'expert') {
+    user = await Expert.findOne({ where: { email } });
+  } else if (role === 'learner') {
+    user = await User.findOne({ where: { email } });
+  } else {
+    return res.status(400).json({ message: 'Invalid role' });
   }
 
-  if (role === 'expert') {
-    const expert = await Expert.findOne({ where: { email } });
-    if (!expert) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-    const isMatch = await bcrypt.compare(password, expert.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-    const token = uuidv4();
-    const key = `auth_${token}`;
-    await redisClient.set(key, expert.id, 18000);
-    res.status(200).json({
-      message: 'Login successful',
-      expertId: expert.id,
-      'X-Token': token
-    });
-  } else if (role === 'learner') {
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-    const token = uuidv4();
-    const key = `auth_${token}`;
-    await redisClient.set(key, user.id, 86400);
-    res.status(200).json({
-      message: 'Login successful',
-      learnerId: user.id,
-      'X-Token': token
-    });
-  } else {
-    return res.json({ message: 'Invalid role' });
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid email or password' });
   }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ message: 'Invalid email or password' });
+  }
+
+  const token = uuidv4();
+  const key = `auth_${token}`;
+  await redisClient.set(key, user.id, role === 'admin' ? 7200 : role === 'expert' ? 18000 : 86400);
+
+  res.status(200).json({
+    message: 'Login successful',
+    [`${role}Id`]: user.id,
+    'X-Token': token
+  });
 };
+
 
 /**
  * Logs out a user by removing their authentication token from Redis.

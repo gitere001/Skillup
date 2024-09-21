@@ -43,11 +43,6 @@ const Course = sequelize.define("Course", {
         allowNull: false,
         defaultValue: 'Others'
     },
-    coursePath: {
-        type: DataTypes.STRING,
-        allowNull: true
-
-    },
     price: {
         type: DataTypes.INTEGER,
         allowNull: false,
