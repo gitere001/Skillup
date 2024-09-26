@@ -10,6 +10,7 @@ import welcomeNote from '../utils/customWelcome.js';
 import ExpertPurchasedCourse from '../modules/expertPurchasedCourses.js';
 import { areSimilar } from '../utils/similarityTest.js';
 import { title } from 'process';
+import { cookie } from 'express-validator';
 
 class FileController {
     /**
@@ -18,7 +19,10 @@ class FileController {
      * @returns {Promise<Object|null>} - Returns a user object if found, otherwise null.
      */
     static async getUser(req) {
-        const token = req.header('X-Token');
+        const token = req.headers.cookie.split("=")[1];
+        if (!token) {
+            return null
+        }
         const key = `auth_${token}`;
         const userId = await redisClient.get(key);
 
@@ -38,7 +42,14 @@ class FileController {
      * @returns {Promise<Object|null>} - Returns an expert object if found, otherwise null.
      */
     static async getExpert(req) {
-        const token = req.header('X-Token');
+        let token;
+        if (req.headers.cookie) {
+            token = req.headers.cookie.split("=")[1];
+        } else {
+            console.log(req.)
+            token = req.headers['X-Token']
+        }
+
         const key = `auth_${token}`;
         const expertId = await redisClient.get(key);
 

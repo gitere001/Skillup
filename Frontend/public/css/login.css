@@ -1,0 +1,75 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.8rem; /* Smaller heading */
+}
+h2 {
+	text-align: center;
+	margin-bottom: 20px;
+	color: #333;
+}
+
+form {
+    background-color: white;
+    padding: 15px; /* Less padding for a compact feel */
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 300px; /* Compact width */
+    width: 100%;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: normal; /* Neutral font weight */
+    color: #000000;
+}
+
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 8px; /* Less padding for inputs */
+    margin-bottom: 10px;
+    border: 1px solid #0e0505;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    padding: 8px; /* Reduced padding */
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+.message {
+    margin-top: 10px; /* Compact spacing */
+    padding: 8px; /* Less padding */
+    border-radius: 5px;
+    display: none; /* Hidden by default */
+}

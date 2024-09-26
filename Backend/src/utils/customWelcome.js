@@ -14,7 +14,7 @@ const welcomeNote = async (user) => {
 	} else {
 		greeting = "Good Evening";
 	}
-	const note = `${greeting} ${userName}, welcome to SkillUp! We are excited to have you on board.`;
+	const note = `${greeting} ${userName}`;
 	return note;
 
 }

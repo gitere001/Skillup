@@ -46,7 +46,7 @@ const validateRegistration = (req, res, next) => {
 	  return res.status(400).json({ error: 'Password is required' });
 	}
 	if (!passwordRegex.test(password)) {
-	  return res.status(400).json({ error: 'Invalid password format. Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character' });
+	  return res.status(400).json({ error: 'Invalid password' });
 	}
 	if (!password2 || password2.trim() === '') {
 	  return res.status(400).json({ error: 'Confirm password is required' });

@@ -40,26 +40,27 @@ export const register = async (req, res) => {
   if (role === 'expert') {
     const expert = await Expert.findOne({ where: { email } });
     if (expert) {
-      return res.status(400).json({ message: 'Expert already exists' });
+      return res.status(400).json({ error: 'Expert already exists' });
     }
     const hash = await bcrypt.hash(password, 10);
-    const newExpert = await Expert.create({
+    const expertData = {
       firstName,
       lastName,
       email,
       password: hash,
       role,
       paymentMethod,
-      bankName,
-      bankAccountNumber,
-      mpesaNumber
-    });
-    return res.status(201).json({ expertId: newExpert.id });
+      ...(paymentMethod === 'bank' && { bankName, bankAccountNumber }),
+      ...(paymentMethod === 'mpesa' && { mpesaNumber })
+    };
+    const newExpert = await Expert.create(expertData);
+    console.log(newExpert);
+    return res.status(201).json({ message: 'success' });
 
   } else if (role === 'learner') {
     const learner = await User.findOne({ where: { email } });
     if (learner) {
-      return res.status(400).json({ message: 'Learner already exists' });
+      return res.status(400).json({ error: 'Learner already exists' });
     }
     const hash = await bcrypt.hash(password, 10);
     const newUser = await User.create({
@@ -69,7 +70,7 @@ export const register = async (req, res) => {
       password: hash,
       role
     });
-    return res.status(201).json({ learnerId: newUser.id });
+    return res.status(201).json({ message: 'success' });
   }
 };
 
@@ -103,7 +104,7 @@ export const login = async (req, res) => {
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return res.status(400).json({ message: 'Invalid email or password' });
+    return res.status(400).json({ error: 'Invalid email or password' });
   }
 
   const token = uuidv4();
@@ -111,8 +112,8 @@ export const login = async (req, res) => {
   await redisClient.set(key, user.id, role === 'admin' ? 7200 : role === 'expert' ? 18000 : 86400);
 
   res.status(200).json({
-    message: 'Login successful',
-    [`${role}Id`]: user.id,
+    message: 'success',
+    role: role,
     'X-Token': token
   });
 };
@@ -127,7 +128,7 @@ export const login = async (req, res) => {
  */
 export const logout = async (req, res) => {
   try {
-    const token = req.headers['X-Token'] || req.headers['x-token'];
+    const token = req.headers.cookie.split("=")[1];
     console.log('Token:', token);
 
     if (!token) {
@@ -144,7 +145,7 @@ export const logout = async (req, res) => {
     // Remove the token from Redis
     await redisClient.del(`auth_${token}`);
 
-    res.status(200).json({ message: 'Logout successful' });
+    res.status(200).json({ message: 'success' });
   } catch (error) {
     console.error('Error logging out:', error);
     res.status(500).json({ error: 'Internal server error' });
