@@ -112,7 +112,7 @@ class FileController {
 
         try {
             await fs.mkdir(folderPath, { recursive: true });
-            return res.status(201).json({ courseId: newCourse.id });
+            return res.status(201).json({ message: 'success', courseId: newCourse.id });
         } catch (err) {
             console.error('Error creating folder:', err);
             return res.status(500).json({ error: 'Internal server error' });
@@ -185,7 +185,7 @@ class FileController {
             await newLesson.save();
 
             // Respond with the new lesson ID
-            return res.status(201).json({ lessonId: newLesson.id });
+            return res.status(201).json({ message: 'success', lessonId: newLesson.id });
         } catch (error) {
             console.error('Error creating lesson:', error);
             return res.status(500).json({ error: 'Internal server error' });
