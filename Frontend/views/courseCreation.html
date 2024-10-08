@@ -9,11 +9,14 @@
 <body>
 	<a href="/expert-dashboard" id="back-btn" style="position: absolute; top: 10px; left: 10px; background-color: #f0f0f0; padding: 10px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold;">&larr; Back</a>
     <div class="container">
+        <div id="message"></div>
+        <div id="session-message"></div>
         <h1>Create a New Course</h1>
         <form id="course-form">
             <div class="form-group">
-                <label for="course-title">Course Title:</label>
+                <label for="topic">Course Title:</label>
                 <input type="text" id="course-title"
+                name="topic"
 				 placeholder="Enter Course Title"
 				 minlength="5"
 				 maxlength="70"
@@ -21,8 +24,9 @@
             </div>
 
             <div class="form-group">
-                <label for="course-description">Course Description:</label>
+                <label for="description">Course Description:</label>
                 <textarea id="course-description"
+                name="description"
 				placeholder="Enter Course Description"
 				minlength="5" maxlength="200"
 				 required></textarea>
@@ -30,7 +34,7 @@
 
             <div class="form-group">
                 <label for="course-category">Category:</label>
-                <select id="course-category" required>
+                <select id="category" name="category" required>
                     <option value="" disabled selected>Select a category</option>
                     <option value="Finance & Investment">Finance & Investment</option>
                     <option value="Business & Entrepreneurship">Business & Entrepreneurship</option>
@@ -45,8 +49,8 @@
             </div>
 
             <div class="form-group">
-                <label for="course-price">Price:</label>
-                <input type="number" required min="0" id="course-price" placeholder="Enter Course Price" required>
+                <label for="price">Price:</label>
+                <input type="number" name="price" required min="0" id="course-price" placeholder="Enter Course Price" required>
             </div>
 
             <button type="submit" class="submit-button">Submit Course</button>

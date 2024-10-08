@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const loginLink = document.getElementById('login-user');
 	const loginForm = document.getElementById('login-form')
-	
+
 
 	if (loginForm) {
 		loginForm.addEventListener('submit', (e) => {

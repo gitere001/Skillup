@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Management</title>
+  <link rel="stylesheet" href="/css/lessons.css">
+</head>
+<body>
+  <a href="/expert-dashboard" id="back-btn" style="position: absolute; top: 10px; left: 10px; background-color: #f0f0f0; padding: 10px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold;">&larr; Back</a>
+
+  <div id="course-container">
+
+    <div id="session-message"></div>
+
+    <!-- Course Details and Submit Review Button -->
+    <div id="course-details-container">
+      <div id="course-details" class="course-card"> <!-- Add a class for styling -->
+        <h2>Course: <span id="course-topic"></span></h2>
+        <h3>Status: <span id="course-status"></span></h3>
+        <p>Description: <span id="course-description"></span></p>
+        <p>Price: <span id="course-price"></span></p>
+        <p>
+          <a id="update-course-btn" href="#" role="button">Update Course</a>
+        </p>
+        <p>
+          <button id="submit-review-btn">Submit for Review</button>
+        </p>
+      </div>
+    </div>
+
+
+    <!-- Existing Lessons Section -->
+    <div id="lesson-container">
+      <button id="toggle-lessons-btn">View Existing Lessons</button>
+      <div id="existing-lessons" style="display: none;">
+          <div id="lesson-items"></div>
+      </div>
+  </div>
+
+
+    <!-- Add Lesson Button -->
+    <button id="open-modal-btn">Add New Lesson</button>
+
+    <!-- Modal for Adding a New Lesson -->
+    <div id="add-lesson-modal" style="display: none;">
+      <div id="add-lesson-section">
+        <h3>Add a New Lesson</h3>
+		<div id="message"></div>
+        <form id="add-lesson-form" enctype="multipart/form-data">
+
+			<label for="title">Lesson Title:</label>
+			<input type="text" id="title" name="title" placeholder="Enter lesson title" minlength="5" maxlength="100">
+
+			<label for="description">Lesson Description:</label>
+			<textarea id="description" name="description" placeholder="Enter lesson description" maxlength="200"></textarea>
+
+			<div class="button-row">
+			  <label for="content">Upload Content (PDF or Document):</label>
+			  <input type="file" id="content" name="content" accept=".pdf, .docx">
+			</div>
+
+			<div class="button-row">
+			  <label for="video">Upload Video (MP4):</label>
+			  <input type="file" id="video" name="video" accept=".mp4">
+			</div>
+
+			<div class="button-row">
+			  <button type="submit" id="submit-lesson-btn">Submit Lesson</button>
+			</div>
+		  </form>
+
+        <button id="close-modal-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/expertDashboard.js"></script>
+  <script src="/js/lessons.js">
+
+  </script>
+</body>
+</html>

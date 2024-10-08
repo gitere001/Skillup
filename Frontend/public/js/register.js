@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             messageDiv.textContent = 'Registration successful!';
                             messageDiv.style.color = 'green';
                             setTimeout(() => {
-                                window.location.href = '/login'; // Redirect after a delay
+                                window.location.href = '/loginUsers';
                             }, 2000);
                         } else {
                             messageDiv.textContent = result.error;

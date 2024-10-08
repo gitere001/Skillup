@@ -1,0 +1,103 @@
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+#course-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Card styling for course details */
+.course-card {
+  background-color: #e6f7ff; /* Light blue background */
+  border-radius: 12px; /* Rounded corners */
+  padding: 20px; /* Padding for spacing */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Soft shadow */
+  margin-bottom: 20px; /* Spacing below the card */
+}
+
+/* Headings */
+h2, h3 {
+  margin-bottom: 10px;
+}
+
+/* Input, textarea, and buttons styling */
+input, textarea, button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Update Course Button */
+#update-course-btn {
+  background-color: #008080; /* Teal */
+  color: white;
+  cursor: pointer;
+  font-size: 18px; /* Increased font size */
+  font-weight: bold;
+  border: none;
+  border-radius: 8px; /* Slightly increased border radius */
+  padding: 12px; /* Added padding */
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Added box-shadow transition */
+}
+
+#update-course-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+}
+
+/* Submit Review Button */
+#submit-review-btn {
+  background-color: #28a745; /* Green */
+  color: white;
+  cursor: pointer;
+  font-size: 18px; /* Increased font size */
+  font-weight: bold;
+  border: none;
+  border-radius: 8px; /* Slightly increased border radius */
+  width: 70%; /* Button width */
+  padding: 12px; /* Added padding */
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Added box-shadow transition */
+}
+
+#submit-review-btn:hover {
+  background-color: #218838; /* Darker green on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+}
+
+/* Button styling */
+button {
+  background-color: #455A64; /* Button color */
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  width: 20%;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #37474F;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  #course-details-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
