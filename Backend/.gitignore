@@ -6,3 +6,4 @@ courses/
 src/utils/similarityTest.js
 src/utils/testSimilarity.js
 tmp/
+node_modules/
