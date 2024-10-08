@@ -21,7 +21,6 @@ frontendRouter.get('/register-learner', (req, res) => {
 	res.sendFile(path.join(__dirname, '../../../Frontend/views/learnerForm.html'));
 });
 frontendRouter.get('/loginUsers', (req, res) => {
-	console.log('login triggered')
 	res.sendFile(path.join(__dirname, '../../../Frontend/views/login.html'));
 });
 frontendRouter.get('/expert-dashboard', (req, res) => {
@@ -31,4 +30,14 @@ frontendRouter.get('/create-course', (req, res) => {
 	res.sendFile(path.join(__dirname, '../../../Frontend/views/courseCreation.html'));
 
 })
+frontendRouter.get('/lessons/:courseId', (req, res) => {
+	const courseId = req.params.courseId; // Retrieve course ID from route params
+	if (!courseId) {
+	  return res.status(400).send('Course ID is required');
+	}
+
+	// Use the courseId to load course-specific data
+	res.sendFile(path.join(__dirname, '../../../Frontend/views/lessons.html'));
+  });
+
 export default frontendRouter;

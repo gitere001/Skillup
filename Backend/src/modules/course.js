@@ -4,16 +4,17 @@ import { v4 as uuidv4 } from "uuid";
 import Lesson from "./lesson.js";
 
 const categories = [
-    'Finance & investment',
+    'Finance & Investment',
     'Business & Entrepreneurship',
-    'Technology & programming',
+    'Technology & Programming',
     'Agriculture',
     'Education',
-    'Health & wellness',
+    'Health & Wellness',
     'Legal & Regulatory',
     'Personal Development',
     'Others'
 ];
+
 
 const Course = sequelize.define("Course", {
     id: {

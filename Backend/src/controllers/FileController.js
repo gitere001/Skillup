@@ -9,8 +9,9 @@ import { validate as isUuid } from 'uuid';
 import welcomeNote from '../utils/customWelcome.js';
 import ExpertPurchasedCourse from '../modules/expertPurchasedCourses.js';
 import { areSimilar } from '../utils/similarityTest.js';
-import { title } from 'process';
-import { cookie } from 'express-validator';
+import { format } from 'date-fns';
+import mammoth from 'mammoth';
+import { extractFileContent } from '../utils/contentHandler.js';
 
 class FileController {
     /**
@@ -19,9 +20,11 @@ class FileController {
      * @returns {Promise<Object|null>} - Returns a user object if found, otherwise null.
      */
     static async getUser(req) {
-        const token = req.headers.cookie.split("=")[1];
-        if (!token) {
-            return null
+        let token;
+        if (req.headers.cookie) {
+            token = req.headers.cookie.split("=")[1];
+        } else {
+            token = req.headers['x-token']
         }
         const key = `auth_${token}`;
         const userId = await redisClient.get(key);
@@ -46,8 +49,7 @@ class FileController {
         if (req.headers.cookie) {
             token = req.headers.cookie.split("=")[1];
         } else {
-            console.log(req.)
-            token = req.headers['X-Token']
+            token = req.headers['x-token']
         }
 
         const key = `auth_${token}`;
@@ -123,7 +125,7 @@ class FileController {
 
         try {
             await fs.mkdir(folderPath, { recursive: true });
-            return res.status(201).json({ courseId: newCourse.id });
+            return res.status(201).json({ message: 'success' });
         } catch (err) {
             console.error('Error creating folder:', err);
             return res.status(500).json({ error: 'Internal server error' });
@@ -135,6 +137,19 @@ class FileController {
          * @param {Object} res - The response object.
          * @returns {Object} - JSON response with the new lesson ID or an error.
          */
+    static async getCourseById(req, res) {
+    const expert = await FileController.getExpert(req);
+    if (!expert) {
+        return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const courseId = req.params.courseId;
+        const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
+        if (!course) {
+            return res.status(404).json({ error: 'Course not found' });
+        }
+        return res.status(200).json({ course });
+
+    }
     static async addLesson(req, res) {
         try {
             // Ensure the user is authenticated
@@ -178,12 +193,25 @@ class FileController {
 
             // Handle content file if provided
             if (files.content && files.content.length > 0) {
-                const originalFilename = files.content[0].originalname;
-                const filePath = files.content[0].path;
-                const contentPath = path.join(lessonPath, originalFilename);
-                await fs.rename(filePath, contentPath);
-                newLesson.contentPath = path.join('courses', courseId, newLesson.id.toString(), originalFilename);
+
+                try {
+                    const content = await extractFileContent(files.content[0]);
+                    if (!content) {
+                        return res.status(400).json({ error: 'error extracting file content' });
+                    }
+                    const consistentFilename = `lesson_${newLesson.id}_${Date.now()}.html`;
+                    const contentPath = path.join(lessonPath, consistentFilename);
+
+                    // Write the extracted content to a new HTML file
+                    await fs.writeFile(contentPath, `<html><body>${content}</body></html>`);
+
+                    // Update the lesson object with the new content path
+                    newLesson.contentPath = path.join('courses', courseId, newLesson.id.toString(), consistentFilename);
+                } catch (error) {
+                    return res.status(400).json({ error: error.message });
+                }
             }
+
 
             // Handle video file if provided
             if (files.video && files.video.length > 0) {
@@ -196,7 +224,7 @@ class FileController {
             await newLesson.save();
 
             // Respond with the new lesson ID
-            return res.status(201).json({ lessonId: newLesson.id });
+            return res.status(201).json({ message: 'Lesson added successfully!' });
         } catch (error) {
             console.error('Error creating lesson:', error);
             return res.status(500).json({ error: 'Internal server error' });
@@ -287,8 +315,18 @@ class FileController {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const courses = await Course.findAll({ where: { expertId: expert.id } });
-        return res.status(200).json({ courses });
+        const courses = await Course.findAll({
+            where: { expertId: expert.id },
+            attributes: ['id', 'topic', 'description', 'category', 'price', 'status', 'createdAt'],
+            order: [['createdAt', 'DESC']],
+        });
+        const formattedCourses = courses.map(course => {
+            return {
+                ...course.get(), // Spread the original course attributes
+                createdAt: format(new Date(course.createdAt), 'dd MMMM yyyy') // Format the date
+            };
+        });
+        return res.status(200).json({ courses: formattedCourses });
     }
     /**
      * Returns all courses that have been purchased by learners for the authenticated expert.
@@ -327,6 +365,7 @@ class FileController {
         }
 
         const { courseId, lessonId } = req.params;
+        console.log('recieved the request', courseId, lessonId);
 
         // Find the course and check if it exists and is in draft status
         const course = await Course.findOne({ where: { id: courseId, expertId: expert.id, status: 'draft' } });
@@ -384,16 +423,28 @@ class FileController {
 
         // Fetch lessons associated with the course
         const lessons = await Lesson.findAll({
-             where: { courseId },
-             order: [['createdAt', 'DESC']],
-            });
+            where: { courseId },
+            order: [['createdAt', 'DESC']],
+        });
+
 
         if (!lessons.length) {
             return res.status(404).json({ error: 'No lessons found for this course' });
         }
 
-        return res.status(200).json({ lessons });
+        // Map lessons to the desired format
+        const formattedLessons = lessons.map(lesson => ({
+            id: lesson.id,
+            courseId: lesson.courseId,
+            title: lesson.title,
+            description: lesson.description || null,
+            contentPath: lesson.contentPath, // Ensure this path is correct
+            videoPath: lesson.videoPath, // Ensure this path is correct
+        }));
+
+        return res.status(200).json({ lessons: formattedLessons });
     }
+
     /**
      * Submits a course for review.
      * @param {Object} req - The request object containing parameters.

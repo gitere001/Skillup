@@ -15,7 +15,12 @@ class CourseReviewController {
      * @returns {Promise<Object|null>} - Returns an admin object if found, otherwise null.
      */
     static async getAdmin(req) {
-        const token = req.headers.cookie.split("=")[1];
+        let token;
+        if (req.headers.cookie) {
+            token = req.headers.cookie.split("=")[1];
+        } else {
+            token = req.headers['x-token']
+        }
         const key = `auth_${token}`;
         const adminId = await redisClient.get(key);
         if (!adminId) {

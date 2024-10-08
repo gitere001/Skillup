@@ -14,6 +14,7 @@ const validateLesson = (req, res, next) => {
     const { video, content } = req.files;
     const { courseId } = req.params;
 
+
     // Validate courseId as a UUID
     if (!isUuid(courseId)) {
         return res.status(400).json({ error: 'Course ID is required and must be a valid UUID.' });

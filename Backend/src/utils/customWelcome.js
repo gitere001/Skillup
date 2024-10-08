@@ -1,9 +1,7 @@
 const welcomeNote = async (user) => {
 	const userName = user.firstName;
 	const now = new Date();
-	console.log('now', now)
 	const kenyaTimeString = now.toLocaleString("en-UK", { timeZone: "Africa/Nairobi", hour: '2-digit', hour12: false });
-	console.log('kenyaTimeString', kenyaTimeString)
 	const hours = parseInt(kenyaTimeString);
 	let greeting;
 

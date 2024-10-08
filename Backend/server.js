@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 import syncDatabase from './src/storage/synchronizeDb.js';
 import courseCreationRouter from './src/routes/courseCreationRouters.js';
 import cartRouter from './src/routes/cartRoute.js';
@@ -15,36 +16,42 @@ const port = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Middleware to disable caching completely
+app.use((req, res, next) => {
+    // Disable caching by setting Cache-Control to 'no-store'
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+});
 
-app.use('/images', express.static(path.join(__dirname, '../Frontend/public/images'), {
-  maxAge: '1d'
-}));
-app.use(express.static(path.join(__dirname, '../Frontend/public/')));
 
-console.log(path.join(__dirname, '../Frontend/public'));
+app.use(express.static(path.join(__dirname, '../Frontend/public')));
+app.use('/courses', express.static(path.join(__dirname, 'courses')));
 
 
+// Body parsing middleware
 app.use(express.json());
+
+// Define your routers
 app.use(courseCreationRouter);
 app.use(cartRouter);
 app.use(authRouter);
 app.use(courseReviewRouter);
-app.use(learnerRouter)
+app.use(learnerRouter);
 app.use(frontendRouter);
 
-
-
+// Start the server
 const startServer = async () => {
-  try {
-    await syncDatabase();
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-    });
-  } catch (error) {
-    console.error('Error starting the server:', error);
-  }
+    try {
+        await syncDatabase(); // Synchronize the database before starting the server
+        app.listen(port, () => {
+            console.log(`Server running on port ${port}`);
+        });
+    } catch (error) {
+        console.error('Error starting the server:', error);
+    }
 };
 
+// Execute the server start
 startServer();
 
 export default app;

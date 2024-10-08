@@ -31,16 +31,17 @@ const validateCourseCreation = (req, res, next) => {
 
 
     const validCategories = [
-        'Finance & investment',
+        'Finance & Investment',
         'Business & Entrepreneurship',
-        'Technology & programming',
+        'Technology & Programming',
         'Agriculture',
         'Education',
-        'Health & wellness',
+        'Health & Wellness',
         'Legal & Regulatory',
         'Personal Development',
         'Others'
     ];
+
     if (!category) {
         return res.status(400).json({ error: 'Category is required.' });
     }

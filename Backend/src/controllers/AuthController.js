@@ -128,22 +128,27 @@ export const login = async (req, res) => {
  */
 export const logout = async (req, res) => {
   try {
-    const token = req.headers.cookie.split("=")[1];
-    console.log('Token:', token);
+    let token;
+        if (req.headers.cookie) {
+            token = req.headers.cookie.split("=")[1];
+        } else {
+            token = req.headers['x-token']
+        }
+        console.log(token)
 
     if (!token) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const userId = await redisClient.get(`auth_${token}`);
-    console.log('User ID:', userId);
 
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Remove the token from Redis
     await redisClient.del(`auth_${token}`);
+
+    console.log('successfully logout')
 
     res.status(200).json({ message: 'success' });
   } catch (error) {
