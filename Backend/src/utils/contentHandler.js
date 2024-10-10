@@ -2,6 +2,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import mammoth from 'mammoth';
 import ConvertAPI from 'convertapi';
+import { error } from 'console';
+import { response } from 'express';
 
 // Initialize ConvertAPI with your secret key
 const convertapi = new ConvertAPI('secret_hdRbNVnBP4vecE7Y'); // Replace with your actual secret key
@@ -10,23 +12,32 @@ export async function extractFileContent(contentFile) {
     const originalFilename = contentFile.originalname;
     const filePath = contentFile.path;
     const ext = path.extname(originalFilename).toLowerCase();
-    let content = '';
+    let response = '';
 
     try {
         if (ext === '.pdf') {
             // Convert PDF to HTML using ConvertAPI
-            content = await convertPdfToHtml(filePath);
+            response = await convertPdfToHtml(filePath);
+            fs.unlink(filePath);
         } else if (ext === '.doc' || ext === '.docx') {
             const { value: docContent } = await mammoth.convertToHtml({ path: filePath });
-            content = docContent;
+            if (!docContent) {
+                console.error('No content found in the document.');
+                response = {error: 'No content found in the document.'};
+
+            }
+            response = {content: docContent};
+
+            fs.unlink(filePath);
         } else {
-            throw new Error('Unsupported file type. Please upload a PDF or DOC/DOCX file.');
+            console.error('Unsupported file format.');
+            response = {error: 'Unsupported file format.'};
         }
 
-        return content;
+        return response;
     } catch (error) {
         console.error('Error extracting content:', error);
-        return null;
+        return {error: error.message};
     }
 }
 
@@ -44,12 +55,12 @@ async function convertPdfToHtml(filePath) {
         // Read the saved HTML file and return its content
         const htmlContent = await fs.readFile(outputPath, 'utf8');
 
-        // Optionally, delete the temporary HTML file after reading (uncomment if needed)
         // await fs.unlink(outputPath);
 
-        return htmlContent;
+        return {content: htmlContent};
     } catch (error) {
-        console.error('Error converting PDF to HTML:', error);
-        throw error; // Re-throw error for handling in extractFileContent
+
+        console.error('Error converting PDF to HTML:', error.message);
+        return {error: error.message};
     }
 }

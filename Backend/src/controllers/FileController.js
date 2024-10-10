@@ -171,9 +171,8 @@ class FileController {
                 return res.status(400).json({ error: 'Course is not in draft or rejected status' });
             }
 
-            const availableLessons = await Lesson.findAll({ where: { courseId } });
-            const availableTitles = availableLessons.map(lesson => lesson.title);
-            const titleExists = availableTitles.some(t => areSimilar(t, title));
+            const availableTitles = await Lesson.findAll({ where: { courseId }, attributes: ['title'] });
+            const titleExists = availableTitles.some(lesson => lesson.title.toLowerCase() === title.toLowerCase());
             if (titleExists) {
                 return res.status(409).json({ error: 'Lesson already exists' });
             }
@@ -196,14 +195,16 @@ class FileController {
 
                 try {
                     const content = await extractFileContent(files.content[0]);
-                    if (!content) {
-                        return res.status(400).json({ error: 'error extracting file content' });
+                    if (content.error) {
+                        await newLesson.destroy();
+                        return res.status(400).json({ error: content.error });
                     }
                     const consistentFilename = `lesson_${newLesson.id}_${Date.now()}.html`;
                     const contentPath = path.join(lessonPath, consistentFilename);
 
+
                     // Write the extracted content to a new HTML file
-                    await fs.writeFile(contentPath, `<html><body>${content}</body></html>`);
+                    await fs.writeFile(contentPath, `<html><body>${content.content}</body></html>`);
 
                     // Update the lesson object with the new content path
                     newLesson.contentPath = path.join('courses', courseId, newLesson.id.toString(), consistentFilename);
@@ -220,7 +221,7 @@ class FileController {
                 newLesson.videoPath = path.join('courses', courseId, newLesson.id.toString(), 'video.mp4');
             }
 
-            // Save the updated lesson
+
             await newLesson.save();
 
             // Respond with the new lesson ID
@@ -365,7 +366,6 @@ class FileController {
         }
 
         const { courseId, lessonId } = req.params;
-        console.log('recieved the request', courseId, lessonId);
 
         // Find the course and check if it exists and is in draft status
         const course = await Course.findOne({ where: { id: courseId, expertId: expert.id, status: 'draft' } });
@@ -424,7 +424,7 @@ class FileController {
         // Fetch lessons associated with the course
         const lessons = await Lesson.findAll({
             where: { courseId },
-            order: [['createdAt', 'DESC']],
+            order: [['createdAt', 'ASC']],
         });
 
 
@@ -458,6 +458,7 @@ class FileController {
         if (!expert) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
+
         const courseId = req.params.courseId;
         const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
         if (!course) {

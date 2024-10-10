@@ -208,6 +208,7 @@ async function displayExpertCourses() {
                 // Remove the course card from the DOM
                 coursesContainer.removeChild(courseCard);
                 alert('Course deleted successfully.');
+                location.reload();
             } else {
                 const result = await response.json();
                 alert(`Failed to delete course: ${result.error}`);

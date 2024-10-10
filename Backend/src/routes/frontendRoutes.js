@@ -10,19 +10,22 @@ const __dirname = path.dirname(__filename);
 
 // Example route to serve the frontend
 frontendRouter.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../../Frontend/views/index.html'));
+    res.sendFile(path.join(__dirname, '../../../Frontend/views/landing-page/index.html'));
 });
 
 frontendRouter.get('/register-expert', (req, res) => {
 	console.log('Registering an expert');
-	res.sendFile(path.join(__dirname, '../../../Frontend/views/expertForm.html'));
+	res.sendFile(path.join(__dirname, '../../../Frontend/views/landing-page/expertForm.html'));
 });
 frontendRouter.get('/register-learner', (req, res) => {
-	res.sendFile(path.join(__dirname, '../../../Frontend/views/learnerForm.html'));
+	res.sendFile(path.join(__dirname, '../../../Frontend/views/landing-page/learnerForm.html'));
 });
 frontendRouter.get('/loginUsers', (req, res) => {
-	res.sendFile(path.join(__dirname, '../../../Frontend/views/login.html'));
+	res.sendFile(path.join(__dirname, '../../../Frontend/views/landing-page/login.html'));
 });
+frontendRouter.get('/author-profile', (req, res) => {
+	res.sendFile(path.join(__dirname, '../../../Frontend/views/landing-page/Portfolio-Website/index.html'));
+})
 frontendRouter.get('/expert-dashboard', (req, res) => {
 	res.sendFile(path.join(__dirname, '../../../Frontend/views/expertDashboard.html'));
 });

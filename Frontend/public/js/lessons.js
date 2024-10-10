@@ -20,6 +20,42 @@ const pathParts = window.location.pathname.split('/');
 const courseId = pathParts[pathParts.length - 1];
 const BASE_URL = 'http://localhost:5000';
 let course = null;
+// Get the file input and remove buttons
+const contentInput = document.getElementById('content');
+const removeContentBtn = document.getElementById('removeContentBtn');
+const videoInput = document.getElementById('video');
+const removeVideoBtn = document.getElementById('removeVideoBtn');
+
+// Show 'Remove Content' button when a content file is selected
+contentInput.addEventListener('change', function() {
+    if (contentInput.files.length > 0) {
+        removeContentBtn.style.display = 'inline'; // Show the button
+    } else {
+        removeContentBtn.style.display = 'none'; // Hide the button if no file is selected
+    }
+});
+
+// Show 'Remove Video' button when a video file is selected
+videoInput.addEventListener('change', function() {
+    if (videoInput.files.length > 0) {
+        removeVideoBtn.style.display = 'inline'; // Show the button
+    } else {
+        removeVideoBtn.style.display = 'none'; // Hide the button if no file is selected
+    }
+});
+
+// Handle 'Remove Content' button click
+removeContentBtn.addEventListener('click', function() {
+    contentInput.value = ''; // Clear the selected content file
+    removeContentBtn.style.display = 'none'; // Hide the button
+});
+
+// Handle 'Remove Video' button click
+removeVideoBtn.addEventListener('click', function() {
+    videoInput.value = ''; // Clear the selected video file
+    removeVideoBtn.style.display = 'none'; // Hide the button
+});
+
 
 // Function to show the modal
 function showModal() {
@@ -45,17 +81,53 @@ function createSubmitReviewButton() {
     removeSubmitReviewButton(); // Ensure existing button is removed
     const submitButton = document.createElement('submitButton');
     submitButton.innerText = 'Submit Course for Review';
-    submitButton.onclick = () => {
+    submitButton.onclick = async () => {
         const confirmSubmission = confirm("Are you sure you want to submit this course for review?");
         if (confirmSubmission) {
-            alert('Course submitted for review!');
-            // Here you can add additional code to handle the submission
-        } else {
-            alert('Submission cancelled.');
-        }
+            const response = await fetch(`http://localhost:5000/courses/${courseId}/submit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            console.log(response); // Log the response for debugging
+
+                const result = await response.json();
+
+                // Show the success popup if message exists
+                if (result.message) {
+                    const successPopup = document.getElementById('submit-success-popup');
+                    successPopup.innerText = 'Course submitted successfully';
+                    successPopup.style.display = 'block'; // Show the popup
+
+                    // Close the popup and reset the form after 2 seconds
+                    setTimeout(() => {
+                        successPopup.style.display = 'none';
+                        location.reload();
+                    }, 2000);
+                } else {
+                    // Show the error popup if no message
+                    const errorPopup = document.getElementById('submit-error-popup');
+                    errorPopup.innerText = result.error || 'An unknown error occurred';
+                    errorPopup.style.display = 'block';
+
+                    // Hide error popup after a delay
+                    setTimeout(() => {
+                        errorPopup.style.display = 'none';
+                    }, 2000); // Added a duration for hiding the error popup
+                }
+
+            } else {
+                alert('Submission cancelled.');
+            }
+
+
     };
-    submitReviewBtnContainer.appendChild(submitButton); // Append to the correct button container
-}
+
+    submitReviewBtnContainer.appendChild(submitButton);
+}// Append to the correct button container
+
 
 function removeSubmitReviewButton() {
     // Remove any existing buttons in the submit review container
@@ -123,6 +195,13 @@ async function handleLessonSubmission(e) {
 
     const formData = new FormData(lessonForm);
 
+    // Show the spinner when submission starts
+    document.getElementById('spinner').style.display = 'block';
+    const spinnerMessage = document.getElementById('spinner-message');
+    spinnerMessage.innerText = 'Submitting lesson...';
+    spinnerMessage.style.display = 'block';
+
+
     try {
         const response = await fetch(`http://localhost:5000/courses/${courseId}/lessons`, {
             method: 'POST',
@@ -131,37 +210,57 @@ async function handleLessonSubmission(e) {
 
         const result = await response.json();
 
+        // Hide the spinner after processing the response
+        document.getElementById('spinner').style.display = 'none';
+        spinnerMessage.style.display = 'none';
+
         // Check if the network request was successful
         if (response.ok) {
             // Check if the result contains a success message or an error message
             if (result.message) {
-                messageDiv.innerText = 'Lesson added successfully!';
-                messageDiv.style.color = 'green';
+                // Show the success popup
+                const successPopup = document.getElementById('success-popup');
+                successPopup.innerText = 'Lesson added successfully!';
+                successPopup.style.display = 'block'; // Show the popup
 
-                // Close the modal and reset the form after 2 seconds
+                // Close the popup and reset the form after 2 seconds
                 setTimeout(() => {
+                    successPopup.style.display = 'none'; // Hide the popup
                     closeModal();
                     lessonForm.reset();
-                    messageDiv.innerText = '';
                     location.reload();
                 }, 2000);
             } else if (result.error) {
-                // Show the error message if present in the result
-                messageDiv.innerText = result.error;
-                messageDiv.style.color = 'red';
+                const errorPopup = document.getElementById('error-popup');
+                errorPopup.innerText = result.error;
+                errorPopup.style.display = 'block'; // Show the error popup
+                setTimeout(() => {
+                    errorPopup.style.display = 'none'; // Hide the popup
+
+
+                }, 2000);
             }
         } else {
-            // Handle any other response status (e.g., 400, 500, etc.)
-            messageDiv.innerText = result.error || 'Something went wrong. Please try again.';
-            messageDiv.style.color = 'red';
+            console.error('Error adding lesson:', result.error);
+            const errorPopup = document.getElementById('error-popup');
+            errorPopup.innerText = result.error;
+            errorPopup.style.display = 'block'; // Show the error popup
+            setTimeout(() => {
+                errorPopup.style.display = 'none'; // Hide the popup
+            }, 2000);
         }
     } catch (error) {
         // Catch and handle any errors that occur during the fetch request
         console.error('Fetch error:', error);
-        messageDiv.innerText = 'Error adding lesson. Please try again.';
-        messageDiv.style.color = 'red';
+        const errorPopup = document.getElementById('error-popup');
+        errorPopup.innerText = 'An error occurred. Please try again later.';
+        errorPopup.style.display = 'block'; // Show the error popup
+        setTimeout(() => {
+            errorPopup.style.display = 'none'; // Hide the popup
+        }, 2000);
     }
 }
+
 async function fetchExistingLessons() {
     try {
         const response = await fetch(`http://localhost:5000/expert/courses/${courseId}/lessons`, {
@@ -188,11 +287,6 @@ function displayLessons(lessons) {
     const lessonItemsDiv = document.getElementById('lesson-items');
     lessonItemsDiv.innerHTML = ''; // Clear previous lessons
 
-    if (lessons.length === 0) {
-        lessonItemsDiv.innerHTML = '<p>No lessons available yet.</p>';
-        return;
-    }
-
     lessons.forEach((lesson) => {
         const lessonDiv = document.createElement('div');
         lessonDiv.classList.add('lesson-item');
@@ -204,6 +298,8 @@ function displayLessons(lessons) {
                 border: 1px solid #ccc;
                 border-radius: 10px;
                 padding: 10px;
+                width: 70%;
+                margin: 0 auto;
                 margin-bottom: 10px;
                 box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
                 background-color: #f9f9f9;
@@ -275,9 +371,33 @@ function displayLessons(lessons) {
         });
 
         // Handle Delete button click
-        deleteButton.addEventListener('click', function () {
-            alert(`Delete lesson: ${lesson.title}`);
-            // Here you can add the logic for actual deletion
+        deleteButton.addEventListener('click', async function () {
+            const confirmDelete = confirm(`Are you sure you want to delete lesson: ${lesson.title}?`);
+            if (!confirmDelete) {
+                return;
+            }
+            if (course.status !== 'draft' || course.status === 'rejected') {
+                alert('Cannot delete lesson in draft or rejected status');
+                return;
+            }
+            const response = await fetch(`http://localhost:5000/courses/${courseId}/lessons/${lesson.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                const result = await response.json()
+                if (result.message) {
+                    lessonDiv.remove();
+                    alert(`lesson: ${lesson.title} Deleted successfully`);
+
+
+                } else {
+                    alert(`Error: ${result.error}`)
+                    return;
+                }
+            }
         });
     });
 }
@@ -288,7 +408,8 @@ function toggleExistingLessons() {
         // Check if lessons exist
         const lessonItemsDiv = document.getElementById('lesson-items');
         if (lessonItemsDiv.children.length === 0) {
-            lessonItemsDiv.innerHTML = '<p>No available lessons.</p>'; // Show the message if no lessons
+            lessonItemsDiv.innerHTML =  '<p style="font-size: 2em; color: #4a90e2; text-align: center; margin-top: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">No Available Lessons</p>'
+            // Show the message if no lessons
         }
 
         existingLessonsContainer.style.display = 'block';

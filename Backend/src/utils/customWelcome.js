@@ -12,7 +12,7 @@ const welcomeNote = async (user) => {
 	} else {
 		greeting = "Good Evening";
 	}
-	const note = `${greeting} ${userName}`;
+	const note = `${greeting} ${userName}, Welcome!`;
 	return note;
 
 }
