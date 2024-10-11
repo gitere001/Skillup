@@ -98,8 +98,6 @@ async function createCourse() {
                     },
                     body: JSON.stringify(data)
                 });
-                console.log('Response:', response);
-
                 const result = await response.json();
                 const messageDiv = document.getElementById('message');
                 messageDiv.style.display = 'block'; // Show message div
@@ -154,13 +152,14 @@ async function displayExpertCourses() {
 
         const coursesHeading = document.createElement('h2');
         coursesHeading.innerText = 'Courses Created';
-        coursesHeading.style.marginBottom = '15px';
+        coursesHeading.classList.add('courses-heading');  // Add class
         coursesContainer.appendChild(coursesHeading);
 
         if (courses.length === 0) {
-            coursesContainer.innerHTML += '<p>No courses available.</p>';
+            coursesContainer.innerHTML += '<p class="no-courses-message">No courses available.</p>';
             return;
         }
+
 
         // Create a list of courses in grid format
         courses.forEach(course => {
@@ -168,12 +167,15 @@ async function displayExpertCourses() {
             courseCard.className = 'course-card';
 
             const topicDiv = document.createElement('div');
+            topicDiv.className = 'course-title';
             topicDiv.innerText = `Topic: ${course.topic}`;
 
             const statusDiv = document.createElement('div');
+            statusDiv.className = 'course-status';
             statusDiv.innerText = `Status: ${course.status}`;
 
             const createdDateDiv = document.createElement('div');
+            createdDateDiv.className = 'course-created-date';
             createdDateDiv.innerText = `Date created: ${course.createdAt}`;
 
             const actionsDiv = document.createElement('div');
@@ -208,6 +210,7 @@ async function displayExpertCourses() {
                 // Remove the course card from the DOM
                 coursesContainer.removeChild(courseCard);
                 alert('Course deleted successfully.');
+                getCoursesOverallDetails();
                 location.reload();
             } else {
                 const result = await response.json();
@@ -235,6 +238,38 @@ async function displayExpertCourses() {
         console.error('Error fetching courses:', error);
     }
 }
+async function getCoursesOverallDetails() {
+    try {
+        const response = await fetch('http://localhost:5000/expert/courses/overall-details', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+
+        });
+
+        const result = await response.json(); // Getting the data from the API response
+        console.log("gotten overall details", result);
+        document.getElementById('total-courses').innerText = result.totalCourses || 0;
+        document.getElementById('approved-courses').innerText = result.approvedCourses || 0;
+        document.getElementById('pending-courses').innerText = result.pendingApprovalCourses || 0;
+        document.getElementById('draft-courses').innerText = result.draftCourses || 0;
+        document.getElementById('rejected-courses').innerText = result.rejectedCourses || 0;
+        const totalEarnings = document.getElementById('total-earnings');
+        totalEarnings.innerText = `Ksh ${result.totalEarnings}` || 0;
+        totalEarnings.style.fontWeight = 'bold';
+        totalEarnings.style.color = '#000000';
+        totalEarnings.style.fontSize = '18px';
+        const pendingDisbursement = document.getElementById('pending-payment-courses')
+        pendingDisbursement.innerText = `Ksh ${result.pendingDisbursement}` || 0;
+        pendingDisbursement.style.fontWeight = 'bold';
+        pendingDisbursement.style.color = '#000000';
+        pendingDisbursement.style.fontSize = '18px';
+
+    } catch (error) {
+        console.error('Error fetching courses:', error);
+    }
+}
 
 // Call fetchWelcomeNote on DOMContentLoaded and set up course creation and display courses
 document.addEventListener('DOMContentLoaded', () => {
@@ -243,4 +278,5 @@ document.addEventListener('DOMContentLoaded', () => {
     displayExpertCourses();
     logout();
     monitorSession();
+    getCoursesOverallDetails();
 });

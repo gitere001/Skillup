@@ -19,6 +19,8 @@ courseCreationRouter.delete('/courses/:courseId/lessons/:lessonId', FileControll
 courseCreationRouter.get('/expert/courses/:courseId/lessons', FileController.getLessonsByCourse);
 courseCreationRouter.put('/courses/:courseId/lessons/:lessonId', FileController.updateLesson);
 courseCreationRouter.post('/courses/:courseId/submit', FileController.submitCourse);
+courseCreationRouter.get('/expert/courses/overall-details', FileController.getCoursesOverallDetails);
+
 
 
 export default courseCreationRouter

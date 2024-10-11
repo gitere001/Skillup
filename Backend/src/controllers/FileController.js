@@ -335,6 +335,36 @@ class FileController {
      * @param {Object} res - The response object.
      * @returns {Object} - JSON response with courses or an error.
      */
+    static async getCoursesOverallDetails(req, res) {
+        const expert = await FileController.getExpert(req);
+        if (!expert) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const courses = await Course.findAll({
+            where: { expertId: expert.id },
+            attributes: ['price', 'status'],
+        });
+        console.log(courses);
+        const paidCoursesIds = await ExpertPurchasedCourse.findAll({
+            where: { expertId: expert.id, paymentStatus:'not disbursed' },
+            attributes: ['courseId'],
+        });
+        const paidCourses = await Course.findAll({
+            where: { id: paidCoursesIds.map(paidCourse => paidCourse.courseId) },
+            attributes: ['price'],
+        });
+
+        const pendingAmout = paidCourses.reduce((total, course) => total + course.price, 0);
+        const totalEarnings = paidCourses.reduce((total, course) => total + course.price, 0);
+        const totalCourses = courses.length;
+        const approvedCourses = courses.filter(course => course.status === 'approved').length;
+        const rejectedCourses = courses.filter(course => course.status === 'rejected').length;
+        const draftCourses = courses.filter(course => course.status === 'draft').length;
+        const pendingApprovalCourses = courses.filter(course => course.status === 'pending approval').length;
+
+        return res.status(200).json({ totalEarnings, totalCourses, approvedCourses, rejectedCourses, draftCourses, pendingApprovalCourses, pendingDisbursement: pendingAmout });
+    }
     static async getExpertPaidCourses(req, res) {
         try {
             const expert = await FileController.getExpert(req);

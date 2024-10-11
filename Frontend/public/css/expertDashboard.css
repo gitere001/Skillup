@@ -63,13 +63,88 @@ nav a:hover {
 .course-card {
     background-color: #bbe1fa; /* Soft Blue */
     padding: 5px;
-    margin: 10px auto;
+    margin: 10px 0;
     border-radius: 8px;
     color: #000;
-    width: 600px;
+    width: 450px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-left: 20px;
+    text-align: left;
 }
+
+.courses-heading {
+    text-align: left;  /* Align heading to the left */
+    font-size: 24px;   /* Optional: Set a nice font size */
+    font-weight: 600;  /* Optional: Make it bold */
+    color: #e0dd09;    /* Optional: Set a color for the heading */
+    margin-left: 20px;
+    margin-bottom: 0px;
+    margin-top: 40px;
+}
+.no-courses-message {
+    color: #ff9800; /* Red color for visibility */
+    font-size: 18px; /* Larger font size for emphasis */
+    margin: 15px 0; /* Spacing around the message */
+    text-align: left; /* Align text to the left */
+    font-weight: bold; /* Make the text bold */
+    margin-left: 20px;
+}
+.course-title {
+    font-size: 18px; /* Larger font size for title */
+    font-weight: bold; /* Bold font */
+    margin-bottom: 5px; /* Space below the title */
+    color: #333; /* Darker color for contrast */
+}
+
+.course-status {
+    font-size: 16px; /* Regular font size for status */
+    color: #020202; /* Change to an orange color for visibility */
+}
+
+.course-date {
+    font-size: 14px; /* Slightly smaller font size for date */
+    color: #555; /* Lighter gray color */
+}
+
+#course-overview {
+    background-color: #bbe1fa;
+    border: 1px solid #131111;
+    border-radius: 8px;
+    padding: 15px;
+    width: 350px;
+    position: absolute;
+    right: 80px;
+    top: 200px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    text-align: left;
+
+}
+
+#course-overview table {
+    width: 100%; /* Use full width of the overview div */
+    border-collapse: collapse; /* Merge borders for a cleaner look */
+}
+
+#course-overview td {
+    padding: 8px; /* Inner spacing for each cell */
+    border-bottom: 1px solid #131212; /* Bottom border for separation */
+    font-size: 16px; /* Maintain font size */
+    color: #555; /* Keep the text color */
+}
+
+#course-overview tr:last-child td {
+    border-bottom: none; /* Remove border from the last row */
+}
+
+#course-overview h2 {
+    margin: 0 0 10px 0; /* Keep the heading spacing */
+    font-size: 20px; /* Keep the font size */
+    color: #333; /* Keep the heading color */
+}
+
+
 
 .course-card:hover {
     transform: translateY(-5px);
@@ -91,6 +166,11 @@ button {
 button:hover {
     background-color: #d43b58; /* Darker Coral */
 }
+#create-course {
+    text-align: left; /* Align the button to the left */
+    margin-left: 0; /* Ensure no automatic centering */
+    padding-left: 20px; /* Optional: Add some left padding for spacing */
+}
 
 /* Footer */
 footer {
@@ -99,6 +179,7 @@ footer {
     text-align: center;
     padding: 20px;
     font-size: 0.9em;
+    margin-top: 250px;
 }
 
 /* Responsive Design */
