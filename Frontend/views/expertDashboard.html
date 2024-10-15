@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expert Dashboard</title>
-	<link rel="stylesheet" href="/css/expertDashboard.css">
-    <!-- Add any meta tags or links to stylesheets here -->
+    <link rel="stylesheet" href="/css/expertDashboard.css">
 </head>
 <body>
 
@@ -14,26 +13,26 @@
         <nav>
             <ul>
                 <li><a href="/home">Home</a></li>
-                <li><a href="/create-course">Add Course</a></li>
                 <li><a href="/purchased-courses">Purchased Courses</a></li>
                 <li><a id="logout">Logout</a></li>
             </ul>
         </nav>
     </header>
 
-
     <!-- Main Content Area -->
     <main>
         <div id="session-message"></div>
+
         <!-- Welcome Note -->
-        <section id="welcome-note">
-            <!--the welcome note will be dynamically be here-->
-        </section>
+        <section id="welcome-note"></section>
 
         <!-- Add Course Button -->
         <section id="create-course">
             <button id="add-course-btn">Add a New Course</button>
+
         </section>
+
+        <!-- Course Overview -->
         <div id="course-overview">
             <h2>Course Overview</h2>
             <table>
@@ -65,23 +64,22 @@
                     <td>💳 Pending Payout:</td>
                     <td id="pending-payment-courses"></td>
                 </tr>
-
             </table>
         </div>
 
         <!-- Courses List -->
         <section id="courses-list">
             <div id="courses-grid" class="courses-grid"></div>
-
-			<!-- courses will dynamically be here-->
         </section>
+
     </main>
 
     <!-- Footer Section -->
     <footer>
         <p>© 2024 Skillup</p>
     </footer>
-	<script src="/js/expertDashboard.js"></script>
+
+    <script src="/js/expertDashboard.js"></script>
 
 </body>
 </html>

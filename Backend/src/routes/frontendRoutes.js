@@ -40,7 +40,7 @@ frontendRouter.get('/lessons/:courseId', (req, res) => {
 	}
 
 	// Use the courseId to load course-specific data
-	res.sendFile(path.join(__dirname, '../../../Frontend/views/lessons.html'));
+	res.sendFile(path.join(__dirname, '../../../Frontend/views/lessonManagement/index.html'));
   });
 
 export default frontendRouter;

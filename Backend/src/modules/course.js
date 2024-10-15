@@ -31,7 +31,7 @@ const Course = sequelize.define("Course", {
             key: "id"
         }
     },
-    topic: {
+    title: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -52,7 +52,11 @@ const Course = sequelize.define("Course", {
 	status: {
 		type: DataTypes.ENUM('draft', 'pending approval', 'approved', 'rejected'),
 		defaultValue: 'draft'
-	  }
+	  },
+    courseImage: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
 }, {
     timestamps: true,
     tableName: "courses"

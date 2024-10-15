@@ -1,6 +1,6 @@
 /**
  * Validates the request body for creating a course.
- * Checks that the topic field is a non-empty string with a length of at least 3 characters.
+ * Checks that the title field is a non-empty string with a length of at least 3 characters.
  * Checks that the description field does not exceed 500 characters.
  * Checks that the category field is one of the following: 'Finance & investment',
  * 'Business & Entrepreneurship', 'Technology & programming', 'Agriculture',
@@ -10,17 +10,21 @@
  * Otherwise, calls `next()` to proceed to the next middleware/controller.
  */
 const validateCourseCreation = (req, res, next) => {
-    const { topic, description, category, price } = req.body;
+    const { title, description, category } = req.body;
+    const price = parseInt(req.body.price);
 
-    // Validate the topic field
-    if (!topic) {
-        return res.status(400).json({ error: 'Topic is required.' });
+
+    console.log(req.body.price);
+
+    // Validate the title field
+    if (!title) {
+        return res.status(400).json({ error: 'title is required.' });
     }
-    if (typeof topic !== 'string') {
-        return res.status(400).json({ error: 'Topic must be a string.' });
+    if (typeof title !== 'string') {
+        return res.status(400).json({ error: 'title must be a string.' });
     }
-    if (topic.length < 5 || topic.length > 100) {
-        return res.status(400).json({ error: 'Topic must be between 5 and 100 characters long.' });
+    if (title.length < 5 || title.length > 100) {
+        return res.status(400).json({ error: 'title must be between 5 and 100 characters long.' });
     }
 	if (description && description.length > 200) {
 		return res.status(400).json({ error: `Description must be at most 200 characters long.${description.length}` });

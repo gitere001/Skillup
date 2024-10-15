@@ -1,4 +1,10 @@
-// Helper function to get the X-Token from the cookie
+const addNewCourseButton = document.getElementById('add-course-btn')
+
+addNewCourseButton.addEventListener('click', () => {
+    window.location.href = '/newCourseForm.html';
+})
+
+
 function getCookieValue(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -13,7 +19,7 @@ function displaySessionExpiredMessage() {
 
     // Redirect after 3 seconds
     setTimeout(() => {
-        window.location.href = '/loginUsers'; // Redirect to login
+        window.location.href = '/landing-page/login.html'; // Redirect to login
     }, 2000); // Adjust time as needed
 }
 
@@ -47,7 +53,7 @@ async function logout() {
         console.log('Logout result', result);
         if (result.message === 'success') {
             document.cookie = 'X-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            window.location.href = '/loginUsers';
+            window.location.href = '/landing-page/login.html';
         } else {
             alert('Logout failed. try again.');
         }
@@ -76,63 +82,6 @@ async function fetchWelcomeNote() {
     }
 }
 
-async function createCourse() {
-
-    const courseForm = document.getElementById('course-form');
-
-    if (courseForm) {
-        courseForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(courseForm);
-            const data = Object.fromEntries(formData);
-            if (data.price) {
-                data.price = parseInt(data.price);
-            }
-
-            try {
-                const response = await fetch('http://localhost:5000/courses', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                const result = await response.json();
-                const messageDiv = document.getElementById('message');
-                messageDiv.style.display = 'block'; // Show message div
-                messageDiv.style.padding = '10px'; // Add padding
-                messageDiv.style.borderRadius = '5px'; // Add rounded corners
-
-                if (result.message === 'success') {
-                    messageDiv.textContent = 'Course created successfully, proceed to add lessons';
-                    messageDiv.style.color = 'green';
-                    setTimeout(() => {
-                        window.location.href = '/expert-dashboard';
-                    }, 2000);
-                } else {
-                    messageDiv.textContent = result.error;
-                    messageDiv.style.color = 'red';
-                }
-
-            } catch (error) {
-                console.error('Error submitting course:', error);
-                const messageDiv = document.getElementById('message');
-                messageDiv.textContent = 'Error submitting course. Please try again.';
-                messageDiv.style.color = 'red';
-            }
-        });
-    }
-
-    // Handle navigation to course creation page
-    const courseLink = document.getElementById('create-course');
-    if (courseLink) {
-        courseLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = '/create-course';
-        });
-    }
-}
 
 async function displayExpertCourses() {
     try {
@@ -182,11 +131,23 @@ async function displayExpertCourses() {
             const openButton = document.createElement('button');
             openButton.innerText = 'Open';
             openButton.onclick = () => {
-                const courseId = course.id;
+                const courseData = {
+                    course: {
+                        courseId: course.id,
+                        topic: course.topic,
+                        description: course.description,
+                        status: course.status,
+                        price: course.price
+                    }
+                };
 
-                window.location.href = `/lessons/${courseId}`;
+                // Convert courseData to a JSON string and encode it
+                const encodedCourseData = encodeURIComponent(JSON.stringify(courseData));
 
-              };
+                // Construct the URL correctly with a single ? for the first parameter
+                window.location.href = `http://localhost:5000/lessonManagement/index.html?courseData=${encodedCourseData}`;
+            };
+
 
 
             const deleteButton = document.createElement('button');
@@ -274,7 +235,6 @@ async function getCoursesOverallDetails() {
 // Call fetchWelcomeNote on DOMContentLoaded and set up course creation and display courses
 document.addEventListener('DOMContentLoaded', () => {
     fetchWelcomeNote();
-    createCourse();
     displayExpertCourses();
     logout();
     monitorSession();

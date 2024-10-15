@@ -25,6 +25,7 @@ app.use((req, res, next) => {
 
 
 app.use(express.static(path.join(__dirname, '../Frontend/public')));
+app.use(express.static(path.join(__dirname, '../Frontend/views')));
 app.use('/courses', express.static(path.join(__dirname, 'courses')));
 
 

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Form</title>
+  <link rel="stylesheet" href="/css/courseForm.css">
+</head>
+<body>
+  <a href="/expertDashboard.html" id="back-btn" style="position: absolute; border: 1px solid black; top: 90px; left: 10px; background-color: white; padding: 10px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold;">&larr; Back</a>
+  <!-- Fixed Image and Heading -->
+  <div class="header">
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+
+    </div>
+    <div class="progress-text" id="progress-text">Step 1/6</div>
+
+  </div>
+
+
+
+  <div class="container">
+    <!-- Left side: Form container -->
+    <div class="form-container">
+
+      <div id="message"></div>
+
+      <!-- Step 1: Course Title -->
+      <div class="form-step1 active" id="step-1">
+        <label for="topic">Enter Course Title</label>
+        <input type="text" id="course-title" name="topic" placeholder="Enter Course Title" minlength="5" maxlength="70" required>
+		<span class="characters-counter" id="title-counter">70</span>
+		<div id="message-title" class="error-message"></div>
+      </div>
+
+      <!-- Step 2: Course Description -->
+      <div class="form-step2" id="step-2">
+        <label for="description">Enter Course Description</label>
+        <textarea id="course-description" name="description" placeholder="Enter Course Description" minlength="5" maxlength="200" required></textarea>
+		<span class="characters-counter" id="description-counter">200</span>
+		<div id="message-description" class="error-message"></div>
+      </div>
+
+      <!-- Step 3: Category -->
+      <div class="form-step3" id="step-3">
+        <label for="category">Select Category</label>
+        <select id="category" name="category" required>
+          <option value="" disabled selected>Select a category</option>
+          <option value="Finance & Investment">Finance & Investment</option>
+          <option value="Business & Entrepreneurship">Business & Entrepreneurship</option>
+          <option value="Technology & Programming">Technology & Programming</option>
+          <option value="Agriculture">Agriculture</option>
+          <option value="Education">Education</option>
+          <option value="Health & Wellness">Health & Wellness</option>
+          <option value="Legal & Regulatory">Legal & Regulatory</option>
+          <option value="Personal Development">Personal Development</option>
+          <option value="Others">Others</option>
+        </select>
+		<div id="message-category" class="error-message"></div>
+      </div>
+
+      <!-- Step 4: Price -->
+      <div class="form-step4" id="step-4">
+        <label for="price">Enter Course Price</label>
+        <input type="number" name="price" id="course-price" placeholder="Enter Course Price" required min="0">
+		<div id="message-price" class="error-message"></div>
+      </div>
+	  <!-- Step 5: Course Image (Optional) -->
+	<div class="form-step5" id="step-5">
+		<label for="course-image">Upload Course Image (Optional)</label>
+		<input type="file" id="course-image" name="course-image" accept="image/*">
+		<small class="input-hint">Acceptable formats: JPEG, PNG (max size: 2MB)</small>
+		<button type="button" id="removeContentBtn" class="remove-btn" style="display:none;">remove Image</button>
+		<div id="message-image" class="error-message"></div>
+  	</div>
+    </div>
+
+  </div>
+  <!-- Step 6: Review and Submit -->
+  <div class="form-step6" id="step-6">
+		<h4>Review and Submit</h4>
+		<div id="review-details">
+			<p><strong>Course Title:</strong> <span id="review-course-title"></span></p>
+			<p><strong>Course Description:</strong> <span id="review-course-description"></span></p>
+			<p><strong>Category:</strong> <span id="review-category"></span></p>
+			<p><strong>Price:</strong> <span id="review-course-price"></span></p>
+		</div>
+		<button type="submit" id="submit-course-btn">Submit Course</button>
+	</div>
+	<img id="review-course-image">
+  <button type="button" id="removeImageBtnReview" class="remove-btn-review"">remove Image</button>
+  <button type="button" id="addImageBtn" class="add-btn-review"">Add Image</button>
+  <div class="button-container">
+    <button type="button" id="prev-button">Previous</button>
+    <button type="button" id="next-button">Continue</button>
+</div>
+
+
+  </div>
+  <div id="success-popup" class="popup" style="display:none;"></div>
+  <div id="error-popup" class="popup" style="display:none;"></div>
+  <script>
+    // Function to set the image size
+    function setImageSize(width, height) {
+        const img = document.getElementById("review-course-image");
+        img.style.height = height; // Set the height
+		img.style.width = width;
+    }
+
+    // Call the function with desired dimensions
+    setImageSize("310px", "310px"); // Change these values as needed
+</script>
+
+  <script src="/js/courseForm.js"></script>
+  <script src="/js/expertDashboard.js"></script>
+</body>
+</html>

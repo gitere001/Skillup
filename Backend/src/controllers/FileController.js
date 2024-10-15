@@ -98,39 +98,63 @@ class FileController {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const { topic, description, category, price } = req.body;
+        const { title, description, category, price } = req.body;
+        const courseImage = req.files.courseImage; // Correctly accessing courseImage
 
+        // Check for similar titles in draft status
         const existingCourses = await Course.findAll({
             where: {
                 expertId: expert.id,
                 status: 'draft'
             },
-            attributes: ['topic']
-         });
-         const availableTopics = existingCourses.map(course => course.topic);
-         const topicExists = availableTopics.some(t => areSimilar(t, topic));
-        if (topicExists) {
+            attributes: ['title']
+        });
+        const availableTitles = existingCourses.map(course => course.title);
+        const titleExists = availableTitles.some(t => areSimilar(t, title));
+
+        if (titleExists) {
             return res.status(409).json({ error: 'Course already exists' });
         }
 
-        const newCourse = await Course.create({
-            expertId: expert.id,
-            topic,
-            description,
-            category,
-            price,
-            status: 'draft'
-        });
-        const folderPath = path.join(path.resolve(), 'courses', newCourse.id.toString());
+        // Default image path if no image is uploaded
+        let courseImagePath = 'https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg';
 
+        // First create the course in the database
         try {
+            const newCourse = await Course.create({
+                expertId: expert.id,
+                title,
+                description,
+                category,
+                price,
+                courseImagePath, // initially set to default
+                status: 'draft'
+            });
+
+            // Folder creation logic
+            const folderPath = path.join(path.resolve(), 'courses', newCourse.id.toString());
             await fs.mkdir(folderPath, { recursive: true });
+
+            // Handle uploaded image
+            if (courseImage && courseImage.length > 0) {
+                const tempImagePath = courseImage[0].path; // Ensure this is the correct temp path
+                const imagePath = path.join(folderPath, courseImage[0].originalname); // Set the image path correctly
+                await fs.rename(tempImagePath, imagePath); // Rename the file
+
+                // Update course image path if image was uploaded
+                courseImagePath = imagePath; // Update the course image path
+                await newCourse.update({ courseImagePath });
+            }
+
             return res.status(201).json({ message: 'success' });
+
         } catch (err) {
-            console.error('Error creating folder:', err);
+            console.error('Error creating course:', err);
+            await Course.destroy({ where: { id: newCourse.id } });
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+
         /**
          * Creates a new lesson for a course.
          * @param {Object} req - The request object containing headers, body, and params.
@@ -143,7 +167,10 @@ class FileController {
         return res.status(401).json({ error: 'Unauthorized' });
         }
         const courseId = req.params.courseId;
-        const course = await Course.findOne({ where: { id: courseId, expertId: expert.id } });
+        const course = await Course.findOne({ where:
+             { id: courseId, expertId: expert.id },
+             attributes: ['title', 'description', 'status', 'price'],
+             });
         if (!course) {
             return res.status(404).json({ error: 'Course not found' });
         }
@@ -318,7 +345,7 @@ class FileController {
 
         const courses = await Course.findAll({
             where: { expertId: expert.id },
-            attributes: ['id', 'topic', 'description', 'category', 'price', 'status', 'createdAt'],
+            attributes: ['id', 'title', 'description', 'category', 'price', 'status', 'createdAt'],
             order: [['createdAt', 'DESC']],
         });
         const formattedCourses = courses.map(course => {

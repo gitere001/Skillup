@@ -1,0 +1,371 @@
+/* Reset and body styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* Container styles */
+.container {
+    display: flex;
+    width: 600px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: absolute;
+    top: 170px;
+    left: 400px;
+}
+
+/* Header styles */
+.header {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f4f4f4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Button container styles */
+.button-container {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #f4f4f4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+    z-index: 1;
+}
+
+/* Form container styles */
+.form-container {
+    flex: 1;
+    padding: 60px;
+}
+
+/* Form step styles */
+.form-step1,
+.form-step2,
+.form-step3,
+.form-step4,
+.form-step5,
+.form-step6 {
+    display: none;
+}
+
+.form-step1.active,
+.form-step2.active,
+.form-step3.active,
+.form-step4.active,
+.form-step5.active,
+.form-step6.active {
+    display: block;
+}
+
+/* Heading styles */
+h4 {
+    font-size: 24px;
+    color: #0d0d0d;
+    margin-bottom: 20px;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* Button styles */
+#submit-course-btn {
+    background-color: #595FD9;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    padding: 25px 25px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+#submit-course-btn:hover {
+    background-color: #6E6FFF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#prev-button,
+#next-button {
+    padding: 20px 25px;
+    border: 1px solid black;
+    cursor: pointer;
+    font-size: 18px;
+    flex: 0;
+	border-radius: 8px;
+}
+
+#next-button {
+    background-color: black;
+    color: white;
+}
+
+#next-button:hover,
+#prev-button:hover {
+    background-color: gray;
+}
+
+/* Label styles */
+label {
+    display: block;
+    margin-bottom: 200px;
+    font-size: 30px;
+    position: absolute;
+    top: 0px;
+    left: 140px;
+    font-family: 'Georgia (serif)', serif;
+}
+
+/* Input and textarea styles */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid black;
+    border-radius: 4px;
+    outline: none;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    font-size: 16px;
+}
+
+textarea {
+    height: 150px;
+    font-size: 18px;
+}
+
+/* Input counter styles */
+.input-counter {
+    position: relative;
+    width: 100%;
+}
+
+#course-title {
+    padding-right: 50px;
+}
+
+.characters-counter {
+    position: absolute;
+    right: 70px;
+    top: 43%;
+    transform: translateY(-50%);
+    font-size: 0.9em;
+    color: gray;
+    pointer-events: none;
+}
+
+/* Error message styles */
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+input.error,
+textarea.error,
+select.error {
+    border-color: red;
+}
+
+input.error:focus,
+textarea.error:focus,
+select.error:focus {
+    outline-color: red;
+}
+
+/* Review step styles */
+.form-step6 {
+    position: absolute;
+    padding: 21px 20px;
+    top: 20%;
+    left: 40%;
+    width: 50%;
+    height: 53%;
+	outline: none;
+}
+
+.form-step6 h4 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+#review-details p {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #555;
+}
+
+#review-details p strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Image styles */
+#review-course-image {
+    position: absolute;
+    top: 25%;
+    right: 767px;
+    max-width: 500px;
+    max-height: 500px;
+    display: none;
+}
+
+.remove-btn-review {
+    position: absolute;
+    right: 940px;
+    top: 110px;
+    font-size: 12px;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+    background-color: rgb(230, 88, 88);
+    font-size: 14px;
+    display: none;
+}
+
+.remove-btn-review:hover {
+    background-color: grey;
+}
+
+.add-btn-review {
+    position: absolute;
+    right: 850px;
+    top: 110px;
+    font-size: 12px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+    background-color: rgb(3, 93, 53);
+    font-size: 14px;
+    display: none;
+}
+
+.add-btn-review:hover {
+    background-color: grey;
+}
+
+.remove-btn {
+    position: absolute;
+    right: 440px;
+    top: 110px;
+    font-size: 12px;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+    background-color: rgb(203, 203, 203);
+    font-size: 14px;
+}
+
+.remove-btn:hover {
+    background-color: grey;
+}
+
+/* Input hint styles */
+.input-hint {
+    margin-top: 5px;
+    font-size: 14px;
+    color: black;
+}
+
+#success-popup {
+	display: none;
+	position: fixed;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #035817;
+	color: white;
+	padding: 15px;
+	border-radius: 10px;
+	z-index: 9999;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+	transition: opacity 0.5s ease;
+}
+
+#error-popup {
+	display: none;
+	position: fixed;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #dc3545;
+	color: white;
+	padding: 15px;
+	border-radius: 5px;
+	z-index: 9999;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+	transition: opacity 0.5s ease;
+}
+
+/* Progress Bar Container */
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0; /* Light grey background */
+    border-radius: 20px; /* Rounded corners */
+    padding: 3px; /* Padding for better look */
+    position: relative;
+}
+
+/* Progress Bar */
+.progress-bar {
+    height: 20px;
+    width: 0; /* Initial width */
+    background-color: #76c7c0; /* Default color (could be the color for step 1) */
+    border-radius: 20px; /* Rounded corners */
+    transition: width 0.4s ease, background-color 0.4s ease; /* Smooth transition */
+}
+
+/* Progress Text */
+.progress-text {
+    position: absolute;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+	font-weight: bold;
+    color: black; /* White text color */
+}

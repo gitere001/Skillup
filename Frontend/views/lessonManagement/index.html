@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <!-- Site made with Mobirise Website Builder v4.7.8, https://mobirise.com -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Mobirise v4.7.8, mobirise.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="shortcut icon" href="assets/images/logo4.png" type="image/x-icon">
+  <meta name="description" content="">
+  <title>Lesson Management</title>
+  <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
+  <link rel="stylesheet" href="assets/tether/tether.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="assets/theme/css/style.css">
+  <link rel="stylesheet" href="assets/theme/css/lesson.css">
+  <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+
+</head>
+<body>
+  <div id="submit-success-popup" class="success-popup" style="display:none;">
+  </div>
+
+  <!-- Error Popup -->
+  <div id="submit-error-popup" class="error-popup" style="display:none;">
+    <!-- Error message will be dynamically inserted here -->
+  </div>
+  <section class="header1 cid-uqTtx4My2M mbr-parallax-background" id="header1-0">
+    <a href="/expert-dashboard" id="back-btn" style="position: absolute; top: 10px; left: 10px; background-color: #f0f0f0; padding: 10px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold;">&larr; Back</a>
+
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="mbr-white col-md-10">
+              <div id="courseDetails">
+                <h1 class="" id="course-topic"></h1>
+                <h3 class="" id="course-description"></h3>
+                <p class="" id="course-status"></p>
+                <p class="" id="course-price"></p>
+              </div>
+                <p class="update-course-container" id="updateCourseButton">
+                  <button class="update-course-button">
+                      <i class="fas fa-sync"></i> Update Course Details
+                  </button>
+              </p>
+              <p class="delete-course-container" id="deleteCourseButton">
+                <button class="delete-course-button">
+                    <i class="fas fa-trash"></i>  Delete Course
+                </button>
+            </p>
+
+
+
+
+                <div class="mbr-section-btn align-center">
+                  <a class="btn btn-md btn-primary display-4" id="addNewLesson"><span class="mbri-plus mbr-iconfont mbr-iconfont-btn"></span>ADD A NEW LESSON</a>
+                  <a class="btn btn-md btn-primary display-4" id="viewExistingLessons"><span class="mbri-file mbr-iconfont mbr-iconfont-btn"></span>VIEW EXISTING LESSONS</a>
+                  <a class="btn btn-md btn-success display-4" id="submitForReviewButton"><span class="mbri-paper-plane mbr-iconfont mbr-iconfont-btn"></span>
+                        SUBMIT COURSE FOR REVIEW</a></div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+  <section class="engine"><a href="https://mobirise.me/x">css templates</a></section><script src="assets/web/assets/jquery/jquery.min.js"></script>
+  <div id="add-lesson-modal" style="display: none;">
+    <div id="add-lesson-section">
+      <button id="x" class="x" aria-label="">×</button>
+      <h3>Add a New Lesson</h3>
+      <div id="message"></div>
+      <form id="add-lesson-form" enctype="multipart/form-data">
+        <label for="title">Lesson Title:</label>
+        <input type="text" id="title" name="title" placeholder="Enter lesson title" minlength="5" maxlength="100" required>
+
+        <label for="description">Lesson Description:</label>
+        <textarea id="description" name="description" placeholder="Enter lesson description" maxlength="200"></textarea>
+
+        <div class="input-wrapper">
+          <label for="content">Upload Content (PDF or Document):</label>
+          <div class="file-upload-container">
+            <input type="file" id="content" name="content" accept=".pdf, .docx">
+            <button type="button" id="removeContentBtn" class="remove-btn" style="display:none;">remove content</button>
+          </div>
+        </div>
+
+        <!-- Video upload field -->
+        <div class="input-wrapper">
+          <label for="video">Upload Video (MP4):</label>
+          <div class="file-upload-container">
+            <input type="file" id="video" name="video" accept=".mp4">
+            <button type="button" id="removeVideoBtn" class="remove-btn" style="display:none;">remove video</button>
+          </div>
+        </div>
+
+        <!-- Submit button -->
+        <div class="button-row">
+          <button type="submit" id="submit-lesson-btn">Submit Lesson</button>
+        </div>
+      </form>
+
+      <button id="close-modal-btn">Close</button>
+    </div>
+  </div>
+
+  <div id="spinner" class="spinner" style="display:none;">
+    <div id="spinner-message" style="display:none;"></div>
+  </div>
+
+  <!-- Success Popup -->
+  <div id="success-popup" class="popup" style="display:none;">
+    Lesson added successfully!
+  </div>
+
+  <!-- Error Popup -->
+  <div id="error-popup" class="popup" style="display:none;">
+    <!-- Error message will be dynamically inserted here -->
+  </div>
+  <script src="assets/popper/popper.min.js"></script>
+  <script src="assets/tether/tether.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="assets/smoothscroll/smooth-scroll.js"></script>
+  <script src="assets/parallax/jarallax.min.js"></script>
+  <script src="assets/theme/js/script.js"></script>
+  <script src="assets/theme/js/lesson.js"></script>
+
+
+
+</body>
+</html>

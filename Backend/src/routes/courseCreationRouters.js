@@ -10,7 +10,7 @@ const courseCreationRouter = express.Router();
 courseCreationRouter.get('/expert/welcome-note', FileController.getWelcomeNote);
 
 courseCreationRouter.get('/courses/:courseId', FileController.getCourseById);
-courseCreationRouter.post('/courses', validateCourseCreation, FileController.createNewCourse);
+courseCreationRouter.post('/courses', uploadFiles, validateCourseCreation, FileController.createNewCourse);
 courseCreationRouter.get('/courses', FileController.getExpertCourses);
 courseCreationRouter.get('/expert-paid-courses', FileController.getExpertPaidCourses);
 courseCreationRouter.post('/courses/:courseId/lessons', uploadFiles, validateLesson, FileController.addLesson);

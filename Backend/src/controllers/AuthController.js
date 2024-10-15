@@ -85,6 +85,7 @@ export const register = async (req, res) => {
  * @returns {Object} JSON response containing login status, user ID, and authentication token.
  */
 export const login = async (req, res) => {
+  console.log('recieved login request', req.body)
   const { email, password, role } = req.body;
 
   let user;

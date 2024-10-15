@@ -1,19 +1,16 @@
-/* Import a modern font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-/* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     text-align: center;
-    background-color: #0f4c75; /* Deep Teal */
+    background-color: #0f4c75;
     color: #ececec;
 }
 
-/* Header */
 header {
-    background-color: #1b262c; /* Deep Dark Blue */
+    background-color: #1b262c;
     color: #fff;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -28,7 +25,7 @@ nav ul {
 }
 
 nav a {
-    color: #ffd166; /* Mustard Yellow */
+    color: #ffd166;
     text-decoration: none;
     padding: 12px 20px;
     font-weight: 500;
@@ -36,12 +33,11 @@ nav a {
 }
 
 nav a:hover {
-    color: #06d6a0; /* Soft Mint Green */
+    color: #06d6a0;
 }
 
-/* Welcome Note */
 #welcome-note {
-    background-color: #3282b8; /* Lighter Teal */
+    background-color: #3282b8;
     padding: 25px;
     border-radius: 8px;
     margin: 30px 0;
@@ -53,7 +49,6 @@ nav a:hover {
     text-align: center;
 }
 
-/* Courses List */
 #courses-list {
     display: flex;
     flex-direction: column;
@@ -61,7 +56,7 @@ nav a:hover {
 }
 
 .course-card {
-    background-color: #bbe1fa; /* Soft Blue */
+    background-color: #bbe1fa;
     padding: 5px;
     margin: 10px 0;
     border-radius: 8px;
@@ -74,37 +69,37 @@ nav a:hover {
 }
 
 .courses-heading {
-    text-align: left;  /* Align heading to the left */
-    font-size: 24px;   /* Optional: Set a nice font size */
-    font-weight: 600;  /* Optional: Make it bold */
-    color: #e0dd09;    /* Optional: Set a color for the heading */
+    text-align: left;
+    font-size: 24px;
+    font-weight: 600;
+    color: #e0dd09;
     margin-left: 20px;
     margin-bottom: 0px;
     margin-top: 40px;
 }
 .no-courses-message {
-    color: #ff9800; /* Red color for visibility */
-    font-size: 18px; /* Larger font size for emphasis */
-    margin: 15px 0; /* Spacing around the message */
-    text-align: left; /* Align text to the left */
-    font-weight: bold; /* Make the text bold */
+    color: #ff9800;
+    font-size: 18px;
+    margin: 15px 0;
+    text-align: left;
+    font-weight: bold;
     margin-left: 20px;
 }
 .course-title {
-    font-size: 18px; /* Larger font size for title */
-    font-weight: bold; /* Bold font */
-    margin-bottom: 5px; /* Space below the title */
-    color: #333; /* Darker color for contrast */
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
 }
 
 .course-status {
-    font-size: 16px; /* Regular font size for status */
-    color: #020202; /* Change to an orange color for visibility */
+    font-size: 16px;
+    color: #020202;
 }
 
 .course-date {
-    font-size: 14px; /* Slightly smaller font size for date */
-    color: #555; /* Lighter gray color */
+    font-size: 14px;
+    color: #555;
 }
 
 #course-overview {
@@ -119,41 +114,37 @@ nav a:hover {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 10;
     text-align: left;
-
 }
 
 #course-overview table {
-    width: 100%; /* Use full width of the overview div */
-    border-collapse: collapse; /* Merge borders for a cleaner look */
+    width: 100%;
+    border-collapse: collapse;
 }
 
 #course-overview td {
-    padding: 8px; /* Inner spacing for each cell */
-    border-bottom: 1px solid #131212; /* Bottom border for separation */
-    font-size: 16px; /* Maintain font size */
-    color: #555; /* Keep the text color */
+    padding: 8px;
+    border-bottom: 1px solid #131212;
+    font-size: 16px;
+    color: #555;
 }
 
 #course-overview tr:last-child td {
-    border-bottom: none; /* Remove border from the last row */
+    border-bottom: none;
 }
 
 #course-overview h2 {
-    margin: 0 0 10px 0; /* Keep the heading spacing */
-    font-size: 20px; /* Keep the font size */
-    color: #333; /* Keep the heading color */
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #333;
 }
-
-
 
 .course-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Buttons */
 button {
-    background-color: #ef476f; /* Coral Pink */
+    background-color: #ef476f;
     color: #fff;
     border: none;
     padding: 12px 35px;
@@ -164,23 +155,176 @@ button {
 }
 
 button:hover {
-    background-color: #d43b58; /* Darker Coral */
+    background-color: #d43b58;
 }
 #create-course {
-    text-align: left; /* Align the button to the left */
-    margin-left: 0; /* Ensure no automatic centering */
-    padding-left: 20px; /* Optional: Add some left padding for spacing */
+    text-align: left;
+    margin-left: 0;
+    padding-left: 20px;
 }
 
-/* Footer */
 footer {
-    background-color: #1b262c; /* Deep Dark Blue */
+    background-color: #1b262c;
     color: #fff;
     text-align: center;
     padding: 20px;
     font-size: 0.9em;
     margin-top: 250px;
 }
+#success-popup {
+	display: none;
+	position: fixed;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #035817;
+	color: white;
+	padding: 15px;
+	border-radius: 10px;
+	z-index: 9999;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+	transition: opacity 0.5s ease;
+}
+
+#error-popup {
+	display: none;
+	position: fixed;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #dc3545;
+	color: white;
+	padding: 15px;
+	border-radius: 5px;
+	z-index: 9999;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+	transition: opacity 0.5s ease;
+}
+
+
+
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+#create-course-modal {
+    z-index: 1000;
+}
+
+#create-course-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 600px;
+    padding: 20px;
+    z-index: 1000;
+}
+
+#create-course-section {
+    max-height: auto;
+    overflow-y: auto;
+}
+#create-course-modal h3 {
+    font-size: 24px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+input[type="text"],
+textarea,
+input[type="number"],
+select {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#submit-course-btn {
+    background-color: #024602;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+#submit-course-btn:hover {
+    background-color: #058705;
+}
+
+#close-modal-btn {
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 13px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+#close-modal-btn:hover {
+    background-color: rgb(174, 174, 174);
+    color: #000000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.x {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 20px;
+    height: 23px;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.x:hover {
+    background-color: rgb(174, 174, 174);
+}
+
+.x:focus {
+    outline: none;
+}
+label {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: 500;
+}
+
+
+
+
 
 /* Responsive Design */
 @media (max-width: 600px) {
@@ -196,5 +340,45 @@ footer {
     button {
         width: 100%;
         padding: 12px;
+    }
+    #course-overview {
+        width: 100%; /* Make it take full width */
+        max-height: 400px; /* Adjust height */
+        margin: 10px 0; /* Reduce margin */
+        font-size: 14px; /* Shrink text size */
+    }
+
+    /* Adjust course cards grid */
+    #courses-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); /* Stack cards in 1 column */
+        gap: 10px; /* Space between cards */
+    }
+
+    /* Adjust individual course card styles */
+    .course-card {
+        width: 100%; /* Full width for smaller screens */
+        font-size: 14px; /* Smaller text */
+        padding: 10px; /* Smaller padding */
+    }
+
+    /* General adjustments like making fonts smaller */
+    body {
+        font-size: 14px; /* Smaller font size for overall content */
+    }
+
+    /* Adjust navigation menu if needed */
+    nav ul {
+        flex-direction: column; /* Stack navigation items vertically */
+    }
+
+    nav ul li {
+        margin-bottom: 10px; /* Add space between menu items */
+    }
+
+    /* Adjust button sizes for smaller screens */
+    button {
+        padding: 10px 15px;
+        font-size: 14px;
     }
 }
