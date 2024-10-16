@@ -83,7 +83,7 @@ body {
 }
 /* Buttons */
 .btn {
-  font-weight: 500;
+  font-weight: 300;
   border-width: 2px;
   font-style: normal;
   letter-spacing: 1px;
@@ -1375,5 +1375,5 @@ body {
 .cid-uqTtx4My2M {
   padding-top: 90px;
   padding-bottom: 90px;
-  background-image: url("../../../assets/images/background5.jpg");
+  /* background-image: url("../../../assets/images/background5.jpg"); */
 }

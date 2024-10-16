@@ -53,7 +53,7 @@ const Course = sequelize.define("Course", {
 		type: DataTypes.ENUM('draft', 'pending approval', 'approved', 'rejected'),
 		defaultValue: 'draft'
 	  },
-    courseImage: {
+    courseImagePath: {
         type: DataTypes.STRING,
         allowNull: true
     }

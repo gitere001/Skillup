@@ -12,6 +12,10 @@ const removeContentBtn = document.getElementById('removeContentBtn');
 const videoInput = document.getElementById('video');
 const removeVideoBtn = document.getElementById('removeVideoBtn');
 
+const urlParams = new URLSearchParams(window.location.search);
+const courseId = urlParams.get('courseId');
+console.log('courseId = ', courseId);
+
 addNewLessonButton.addEventListener('click', showModal)
 closeModalBtn.addEventListener('click', closeModal)
 closeTop.addEventListener('click', closeModal)
@@ -55,25 +59,8 @@ function closeModal() {
     modal.style.display = 'none';
 }
 
-const url = new URL(window.location.href);
-const courseDataString = url.searchParams.get('courseData');
-let courseData;
-let courseId;
-let course;
-
-if (courseDataString) {
-    courseData = JSON.parse(decodeURIComponent(courseDataString));
-    course = courseData.course
-    courseId = course.courseId;
-    console.log('course Id', courseId)
-    console.log('course', course)
-} else {
-    console.log('No course data found in the URL.');
-}
 
 const BASE_URL = 'http://localhost:5000';
-
-
 
 async function fetchCourseData() {
     const coursetitle = document.getElementById('course-topic');
@@ -82,20 +69,35 @@ async function fetchCourseData() {
     const courseprice = document.getElementById('course-price');
 
     try {
-        const data = course; // Assuming `course` is defined elsewhere
-        if (url) {
+        const response = await fetch(`/courses/${courseId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        const courseData = await response.json();
+        const data = courseData.course;
+        console.log('request.ok = ', response.ok);
+        console.log('data = ', data);
+        console.log('data is null ', data === null);
+        if (response.ok) {
             if (data) {
-                coursetitle.innerText = `Title:  ${data.topic}`;
+                coursetitle.innerHTML = `${data.title}`;
                 coursetitle.className = 'course-title';
 
-                coursedescription.innerText = `Description: ${data.description}`;
+                coursedescription.innerHTML = `${data.description}`;
                 coursedescription.className = 'course-description';
 
-                coursestatus.innerText = `STATUS: ${data.status}`;
+                coursestatus.innerHTML = `${data.status}`;
                 coursestatus.className = 'course-status';
 
-                courseprice.innerText = `Price: Kes ${data.price}`;
+                courseprice.innerHTML = `Kes ${data.price}`;
                 courseprice.className = 'course-price';
+
+
+
+                const courseImage = document.getElementById('course-image');
+                courseImage.src = data.courseImagePath;
             } else {
                 console.error('Error:', data.message);
                 displayError();

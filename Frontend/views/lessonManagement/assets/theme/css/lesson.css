@@ -1,4 +1,6 @@
 /* Popup Styles */
+/* section {
+	background-color: lightblue; } */
 #submit-success-popup {
 	display: none;
 	position: fixed;
@@ -59,19 +61,16 @@
 	transition: opacity 0.5s ease;
 }
 
+
 /* Course Update and Delete Button Styles */
 .update-course-container {
-	position: absolute;
-	right: 10px;
-	top: 200px;
-	width: 900px;
+	margin-left: 300px;
 }
 
 .update-course-button {
-	background-color: #595FD9;
+	background-color: black;
 	border-radius: 10px;
 	color: #FFFFFF;
-	font-weight: bold;
 	padding: 10px 15px;
 	border: none;
 	cursor: pointer;
@@ -79,7 +78,7 @@
 }
 
 .update-course-button:hover {
-	background-color: #6A7BD9;
+	background-color: #333333;
 }
 
 .update-course-button i {
@@ -87,17 +86,13 @@
 }
 
 .delete-course-container {
-	position: absolute;
-	right: 10px;
-	top: 200px;
-	width: 400px;
+	margin-left: 300px;
 }
 
 .delete-course-button {
 	background-color: #d30707;
 	border-radius: 10px;
 	color: #FFFFFF;
-	font-weight: bold;
 	padding: 10px 15px;
 	border: none;
 	cursor: pointer;
@@ -105,7 +100,7 @@
 }
 
 .delete-course-button:hover {
-	background-color: #6A7BD9;
+	background-color: #9e0707;
 }
 
 .delete-course-button i {
@@ -114,46 +109,57 @@
 
 /* Course Title, Description, Status, and Price Styles */
 #courseDetails {
-    width: 90%; /* Set the width to 90% of the parent element */
-    height: 250px; /* Set the height to 200px */
-    display: flex; /* Enables flexbox */
-    flex-direction: column; /* Stacks children vertically */
-    align-items: center; /* Horizontally centers the content */
-    justify-content: center; /* Vertically centers the content */
-    text-align: center; /* Centers text within the card */
-    padding: 20px; /* Adds space around the content */
-    background-color: #f9f9f9; /* Card background color */
-    border-radius: 10px; /* Optional: rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds shadow effect */
-    overflow: hidden; /* Hides any overflow content */
-	margin-bottom: 10px;
+    position: relative; /* Makes this the reference point for the image container */
+    width: 90%;
+    height: auto;
+    padding: 20px;
+
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+	margin-top: 0;
+}
+
+#course-image-container {
+    position: absolute; /* Absolutely positions this inside #courseDetails */
+    top: 0; /* Adjust the top placement */
+	left: 0;
+    width: 300px; /* Adjust this based on desired image size */
+    height: auto; /* Keeps aspect ratio */
+    padding: 10px; /* Optional padding around the image */
+}
+
+#course-image {
+    width: 100%; /* Fills the container */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Ensure the image is displayed */
+    border-radius: 5px;
 }
 
 .course-title {
-	font-weight: 700;
-	text-align: center;
+	margin-left: 300px;
 	margin-bottom: 10px;
-	font-size: 24px;
+	font-size: 20px;
+	font-weight: bold;
+
 }
 
 .course-description {
-	font-weight: 600;
-	text-align: center;
+	margin-left: 300px;
 	margin-bottom: 10px;
-	font-size: 20px;
+	font-size: 16px;
+
 }
 
 .course-status {
-	font-weight: 700;
-	text-align: center;
+	margin-left: 300px;
 	margin-bottom: 10px;
-	font-size: 20px;
+
 }
 
 .course-price {
-	font-weight: 700;
-	text-align: center;
-	font-size: 20px;
+	margin-left: 300px;
+
 }
 
 /* Error Styles */

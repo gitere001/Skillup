@@ -1,4 +1,6 @@
+
 const addNewCourseButton = document.getElementById('add-course-btn')
+
 
 addNewCourseButton.addEventListener('click', () => {
     window.location.href = '/newCourseForm.html';
@@ -100,7 +102,7 @@ async function displayExpertCourses() {
         coursesContainer.innerHTML = ''; // Clear previous content
 
         const coursesHeading = document.createElement('h2');
-        coursesHeading.innerText = 'Courses Created';
+        coursesHeading.innerText = 'Courses in progress';
         coursesHeading.classList.add('courses-heading');  // Add class
         coursesContainer.appendChild(coursesHeading);
 
@@ -117,7 +119,7 @@ async function displayExpertCourses() {
 
             const topicDiv = document.createElement('div');
             topicDiv.className = 'course-title';
-            topicDiv.innerText = `Topic: ${course.topic}`;
+            topicDiv.innerText = `Title: ${course.title}`;
 
             const statusDiv = document.createElement('div');
             statusDiv.className = 'course-status';
@@ -129,35 +131,28 @@ async function displayExpertCourses() {
 
             const actionsDiv = document.createElement('div');
             const openButton = document.createElement('button');
-            openButton.innerText = 'Open';
-            openButton.onclick = () => {
-                const courseData = {
-                    course: {
-                        courseId: course.id,
-                        topic: course.topic,
-                        description: course.description,
-                        status: course.status,
-                        price: course.price
-                    }
-                };
+            openButton.className = 'open-button';
+            openButton.innerHTML = '&#x270D; update course';
 
-                // Convert courseData to a JSON string and encode it
-                const encodedCourseData = encodeURIComponent(JSON.stringify(courseData));
+            openButton.onclick = () => {
+
 
                 // Construct the URL correctly with a single ? for the first parameter
-                window.location.href = `http://localhost:5000/lessonManagement/index.html?courseData=${encodedCourseData}`;
+                window.location.href = `http://localhost:5000/lessonManagement/index.html?courseId=${course.id}`;
             };
 
 
 
             const deleteButton = document.createElement('button');
-            deleteButton.innerText = 'Delete';
+            deleteButton.className = 'delete-button';
+
+            deleteButton.innerHTML = '&#128465; Delete Course';
             deleteButton.onclick = async () => {
                 if (course.status !== 'draft' && course.status !== 'rejected') {
                     alert('You can only delete courses in draft or rejected status.');
                     return;
                 }
-            const confirmDelete = confirm(`Are you sure you want to delete course: ${course.topic}?`);
+            const confirmDelete = confirm(`Are you sure you want to delete course: ${course.title}?`);
             if (confirmDelete) {
             try {
                 const response = await fetch(`http://localhost:5000/courses/${course.id}`, {

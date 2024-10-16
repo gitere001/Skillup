@@ -119,9 +119,12 @@ class FileController {
         // Default image path if no image is uploaded
         let courseImagePath = 'https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg';
 
+        // Declare newCourse outside of try block
+        let newCourse;
+
         // First create the course in the database
         try {
-            const newCourse = await Course.create({
+            newCourse = await Course.create({
                 expertId: expert.id,
                 title,
                 description,
@@ -138,11 +141,13 @@ class FileController {
             // Handle uploaded image
             if (courseImage && courseImage.length > 0) {
                 const tempImagePath = courseImage[0].path; // Ensure this is the correct temp path
-                const imagePath = path.join(folderPath, courseImage[0].originalname); // Set the image path correctly
-                await fs.rename(tempImagePath, imagePath); // Rename the file
+                const uploadedImageName = courseImage[0].originalname; // Get the original name for the file
+                const uploadedImagePath = path.join(folderPath, uploadedImageName); // Set the image path correctly
 
-                // Update course image path if image was uploaded
-                courseImagePath = imagePath; // Update the course image path
+                await fs.rename(tempImagePath, uploadedImagePath); // Move the file to the course folder
+
+                // Store the relative path for serving the image
+                courseImagePath = path.join('/courses', newCourse.id.toString(), uploadedImageName).replace(/\\/g, '/'); // Ensure URL-friendly path
                 await newCourse.update({ courseImagePath });
             }
 
@@ -150,10 +155,14 @@ class FileController {
 
         } catch (err) {
             console.error('Error creating course:', err);
-            await Course.destroy({ where: { id: newCourse.id } });
+            // Cleanup if newCourse was created successfully
+            if (newCourse) {
+                await Course.destroy({ where: { id: newCourse.id } });
+            }
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+
 
         /**
          * Creates a new lesson for a course.
@@ -167,9 +176,10 @@ class FileController {
         return res.status(401).json({ error: 'Unauthorized' });
         }
         const courseId = req.params.courseId;
+        console.log('get request', courseId);
         const course = await Course.findOne({ where:
              { id: courseId, expertId: expert.id },
-             attributes: ['title', 'description', 'status', 'price'],
+             attributes: ['title', 'description', 'status', 'price', 'courseImagePath'],
              });
         if (!course) {
             return res.status(404).json({ error: 'Course not found' });
