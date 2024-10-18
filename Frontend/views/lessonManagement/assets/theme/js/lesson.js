@@ -1,9 +1,11 @@
-
 const closeModalBtn = document.getElementById('close-modal-btn');
 const modal = document.getElementById('add-lesson-modal');
 const lessonForm = document.getElementById('add-lesson-form');
 const addNewLessonButton = document.getElementById('addNewLesson');
 const closeTop = document.getElementById('x')
+const updateDetailsButton = document.getElementById('updateCourseButton');
+const imageInput = document.getElementById('course-image');
+const deleteCourseButton = document.getElementById('deleteCourseButton');
 
 
 
@@ -15,11 +17,14 @@ const removeVideoBtn = document.getElementById('removeVideoBtn');
 const urlParams = new URLSearchParams(window.location.search);
 const courseId = urlParams.get('courseId');
 console.log('courseId = ', courseId);
+let course;
 
-addNewLessonButton.addEventListener('click', showModal)
+
 closeModalBtn.addEventListener('click', closeModal)
 closeTop.addEventListener('click', closeModal)
 lessonForm.addEventListener('submit', addNewLesson)
+
+
 
 contentInput.addEventListener('change', function() {
     if (contentInput.files.length > 0) {
@@ -76,41 +81,43 @@ async function fetchCourseData() {
             },
         });
         const courseData = await response.json();
-        const data = courseData.course;
+        course = courseData.course;
         console.log('request.ok = ', response.ok);
-        console.log('data = ', data);
-        console.log('data is null ', data === null);
+        console.log('course = ', course);
+        console.log('course is null ', course === null);
         if (response.ok) {
-            if (data) {
-                coursetitle.innerHTML = `${data.title}`;
+            if (course) {
+                coursetitle.innerHTML = `${course.title}`;
                 coursetitle.className = 'course-title';
 
-                coursedescription.innerHTML = `${data.description}`;
+                coursedescription.innerHTML = `${course.description}`;
                 coursedescription.className = 'course-description';
 
-                coursestatus.innerHTML = `${data.status}`;
+                coursestatus.innerHTML = `${course.status}`;
                 coursestatus.className = 'course-status';
 
-                courseprice.innerHTML = `Kes ${data.price}`;
+                courseprice.innerHTML = `Kes ${course.price}`;
                 courseprice.className = 'course-price';
 
 
 
                 const courseImage = document.getElementById('course-image');
-                courseImage.src = data.courseImagePath;
+                courseImage.src = course.courseImagePath;
             } else {
-                console.error('Error:', data.message);
+                console.error('Error:', course.message);
                 displayError();
             }
         } else {
             console.error('Error:', response.status);
-            console.error('Error:', data.message);
+            console.error('Error:', course.message);
             displayError();
         }
     } catch (error) {
         console.error(error);
         displayError();
     }
+
+    console.log('course = ', course);
 
     function displayError() {
         coursetitle.innerText = `Title:  N/A`;
@@ -126,6 +133,66 @@ async function fetchCourseData() {
         courseprice.className = 'error-price';
     }
 }
+addNewLessonButton.addEventListener('click', function () {
+    if (course.status !== 'draft' && course.status !== 'rejected') {
+        alert('You can only add lessons in draft or rejected status.');
+        return;
+    }
+
+    // Call showModal function if the status is valid
+    showModal();
+});
+
+
+deleteCourseButton.addEventListener('click', async () => {
+    if (course.status !== 'draft' && course.status !== 'rejected') {
+        alert('You can only delete courses in draft or rejected status.');
+        return;
+    }
+
+    const confirmDelete = confirm("Are you sure you want to delete this course?");
+    if (confirmDelete) {
+        try {
+            const response = await fetch(`http://localhost:5000/courses/${courseId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                // Remove the course card from the DOM
+                alert('Course deleted successfully.');
+                window.location.href = '/expertDashboard.html';
+            } else {
+                const result = await response.json();
+                alert(`Failed to delete course: ${result.error}`);
+            }
+        } catch (error) {
+            console.error('Error deleting course:', error);
+            alert('Error deleting course. Please try again.');
+        }
+    }
+});
+
+
+updateDetailsButton.addEventListener('click', () => {
+    if (course.status !== 'draft' && course.status !== 'rejected') {
+        alert('You can only update courses in draft or rejected status.');
+        return;
+    }
+        const Course = {
+            title: course.title,
+            description: course.description,
+            status: course.status,
+            price: course.price,
+            category: course.category,
+            courseImagePath: course.courseImagePath,
+            courseId: courseId
+        };
+        const courseDataString = encodeURIComponent(JSON.stringify(Course));
+        window.location.href = `/lessonManagement/updateForm.html?courseData=${courseDataString}`;
+});
 
 
 function submitCourseForReview() {
@@ -247,17 +314,11 @@ function viewExistingLessons () {
 		const confirmSubmission = confirm("Are you sure you want to submit this course for review?");
 	}
 }
-function updateCourseDetails () {
-	const updateDetailsButton = document.getElementById('updateCourseButton');
-	updateDetailsButton.onclick = () => {
-		const confirmUpdate = confirm("You clicked update details!")
-	}
-}
+
 
 document.addEventListener('DOMContentLoaded', function() {
 	fetchCourseData();
 	submitCourseForReview();
 	viewExistingLessons();
-	updateCourseDetails();
 });
 

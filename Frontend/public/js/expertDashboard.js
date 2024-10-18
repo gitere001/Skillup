@@ -85,7 +85,7 @@ async function fetchWelcomeNote() {
 }
 
 
-async function displayExpertCourses() {
+async function displayPendingCourses() {
     try {
 
         const response = await fetch('http://localhost:5000/courses', {
@@ -96,7 +96,8 @@ async function displayExpertCourses() {
         });
 
         const responseData = await response.json();
-        const courses = responseData.courses;
+        const filteredCourses = responseData.courses.filter(course => course.status === 'draft')
+        const courses = filteredCourses;
 
         const coursesContainer = document.getElementById('courses-list');
         coursesContainer.innerHTML = ''; // Clear previous content
@@ -107,7 +108,7 @@ async function displayExpertCourses() {
         coursesContainer.appendChild(coursesHeading);
 
         if (courses.length === 0) {
-            coursesContainer.innerHTML += '<p class="no-courses-message">No courses available.</p>';
+            coursesContainer.innerHTML += '<p class="no-courses-message">No courses in progress.</p>';
             return;
         }
 
@@ -230,7 +231,7 @@ async function getCoursesOverallDetails() {
 // Call fetchWelcomeNote on DOMContentLoaded and set up course creation and display courses
 document.addEventListener('DOMContentLoaded', () => {
     fetchWelcomeNote();
-    displayExpertCourses();
+    displayPendingCourses();
     logout();
     monitorSession();
     getCoursesOverallDetails();

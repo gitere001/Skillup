@@ -11,6 +11,7 @@ courseCreationRouter.get('/expert/welcome-note', FileController.getWelcomeNote);
 
 courseCreationRouter.get('/courses/:courseId', FileController.getCourseById);
 courseCreationRouter.post('/courses', uploadFiles, validateCourseCreation, FileController.createNewCourse);
+courseCreationRouter.patch('/courses/:courseId', uploadFiles, FileController.updateCourse);
 courseCreationRouter.get('/courses', FileController.getExpertCourses);
 courseCreationRouter.get('/expert-paid-courses', FileController.getExpertPaidCourses);
 courseCreationRouter.post('/courses/:courseId/lessons', uploadFiles, validateLesson, FileController.addLesson);

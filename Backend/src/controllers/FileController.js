@@ -163,13 +163,72 @@ class FileController {
         }
     }
 
+        static async updateCourse(req, res) {
+            const expert = await FileController.getExpert(req);
+            if (!expert) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
 
-        /**
-         * Creates a new lesson for a course.
-         * @param {Object} req - The request object containing headers, body, and params.
-         * @param {Object} res - The response object.
-         * @returns {Object} - JSON response with the new lesson ID or an error.
-         */
+            const { title, description, category, price } = req.body;
+            const courseImage = req.files.courseImage;
+            if (!isUuid(req.params.courseId)) {
+                return res.status(400).json({ error: 'Invalid course ID' });
+            }
+
+            const course = await Course.findOne({
+                where: {
+                    expertId: expert.id,
+                    id: req.params.courseId
+                },
+            });
+            if (!course) {
+                return res.status(404).json({ error: 'Course not found' });
+            }
+            const folderPath = path.join(path.resolve(), 'courses', course.id.toString());
+            const defaultImagePath = 'https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg';
+
+
+            try {
+                if (title) {
+                    await course.update({ title });
+                }
+                if (description) {
+                    await course.update({ description });
+                }
+                if (category) {
+                    await course.update({ category });
+                }
+                if (price) {
+                    await course.update({ price });
+                }
+
+                if (courseImage && courseImage.length > 0) {
+                    if (course.courseImagePath !== defaultImagePath) {
+                        await fs.unlink(path.join(folderPath, path.basename(course.courseImagePath)));
+                    }
+
+
+                    const tempImagePath = courseImage[0].path; // Ensure this is the correct temp path
+                    const uploadedImageName = courseImage[0].originalname; // Get the original name for the file
+                    const uploadedImagePath = path.join(folderPath, uploadedImageName); // Set the image path correctly
+
+                    await fs.rename(tempImagePath, uploadedImagePath); // Move the file to the course folder
+
+                    // Store the relative path for serving the image
+                    const courseImagePath = path.join('/courses', course.id.toString(), uploadedImageName).replace(/\\/g, '/'); // Ensure URL-friendly path
+                    await course.update({ courseImagePath });
+                } else {
+                    await course.update({ courseImagePath: defaultImagePath });
+                }
+
+                return res.status(201).json({ message: 'success' });
+
+            } catch (err) {
+                console.error('Error updating course:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+
+        }
     static async getCourseById(req, res) {
     const expert = await FileController.getExpert(req);
     if (!expert) {
@@ -179,7 +238,7 @@ class FileController {
         console.log('get request', courseId);
         const course = await Course.findOne({ where:
              { id: courseId, expertId: expert.id },
-             attributes: ['title', 'description', 'status', 'price', 'courseImagePath'],
+             attributes: ['title', 'description', 'status', 'price', 'category', 'courseImagePath'],
              });
         if (!course) {
             return res.status(404).json({ error: 'Course not found' });
@@ -187,6 +246,7 @@ class FileController {
         return res.status(200).json({ course });
 
     }
+
     static async addLesson(req, res) {
         try {
             // Ensure the user is authenticated

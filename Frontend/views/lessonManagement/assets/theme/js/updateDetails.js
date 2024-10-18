@@ -9,12 +9,29 @@ let currentStep = 0;
 const totalSteps = 6;
 const defaultImageUrl = '/images/no-image.png';
 
-
 const removeImageBtn = document.getElementById('removeContentBtn');
 const imageInput = document.getElementById('course-image');
+const courseTitle = document.getElementById('course-title');
+const courseDescription = document.getElementById('course-description');
+const category = document.getElementById('category');
+const coursePrice = document.getElementById('course-price');
+
 
 const progressBar = document.getElementById('progress-bar');
 const progressText = document.getElementById('progress-text');
+const urlParams = new URLSearchParams(window.location.search);
+const courseDataString = urlParams.get('courseData');
+const decodedCourseData = decodeURIComponent(courseDataString);
+const course = JSON.parse(decodedCourseData);
+const courseId = course.courseId;
+
+console.log('courseId = ', courseId);
+console.log('course = ', course);
+
+courseTitle.value = course.title;
+courseDescription.value = course.description;
+category.value = course.category;
+coursePrice.value = course.price;
 
 // Function to update the progress bar
 function updateProgressBar(step) {
@@ -142,6 +159,7 @@ function updateStepDisplay() {
     updateProgressBar(currentStep + 1);
 }
 
+
 // Function to autofill review details
 function autofillReviewDetails() {
     // Get values from previous steps
@@ -177,8 +195,9 @@ nextButton.addEventListener('click', () => {
 
     // Step 0: Validate Course Title
     if (currentStep === 0) {
-        const courseTitle = document.getElementById('course-title');
+
         const titleMessage = document.getElementById('message-title');
+
         canProceed = validateField(
             courseTitle,
             titleMessage,
@@ -189,8 +208,9 @@ nextButton.addEventListener('click', () => {
 
     // Step 1: Validate Course Description
     else if (currentStep === 1) {
-        const courseDescription = document.getElementById('course-description');
+
         const descriptionMessage = document.getElementById('message-description');
+        courseDescription.value = course.description;
         canProceed = validateField(
             courseDescription,
             descriptionMessage,
@@ -201,8 +221,9 @@ nextButton.addEventListener('click', () => {
 
     // Step 2: Validate Category
     else if (currentStep === 2) {
-        const category = document.getElementById('category');
+
         const categoryMessage = document.getElementById('message-category');
+        course.category = category.value;
         canProceed = validateField(
             category,
             categoryMessage,
@@ -213,8 +234,9 @@ nextButton.addEventListener('click', () => {
 
     // Step 3: Validate Price
     else if (currentStep === 3) {
-        const coursePrice = document.getElementById('course-price');
+
         const priceMessage = document.getElementById('message-price');
+        coursePrice.value = course.price;
         canProceed = validateField(
             coursePrice,
             priceMessage,
@@ -225,20 +247,20 @@ nextButton.addEventListener('click', () => {
 
     // Step 4: Validate Course Image (optional, but check size if provided)
     else if (currentStep === 4) {
-        const courseImageInput = document.getElementById('course-image');
+
         const imageMessage = document.getElementById('message-image');
-        const courseImage = courseImageInput.files[0];
+        const courseImage = imageInput.files[0];
 
         // Image is optional but if provided, ensure it's below 2MB
         if (courseImage && courseImage.size > 2 * 1024 * 1024) {
             canProceed = validateField(
-                courseImageInput,
+                imageInput,
                 imageMessage,
                 true, // This condition is always true to trigger error if image size exceeds limit
                 'Image size should be less than 2MB'
             );
         } else {
-            hideErrorMessage(courseImageInput, imageMessage); // No error if image is optional
+            hideErrorMessage(imageInput, imageMessage); // No error if image is optional
         }
     }
 
@@ -277,9 +299,9 @@ function updateCharacterCounts() {
 document.getElementById('course-title').addEventListener('input', updateCharacterCounts);
 document.getElementById('course-description').addEventListener('input', updateCharacterCounts);
 
-async function createCourse(e) {
+async function updateCourse(e) {
     e.preventDefault();
-    const confirmSubmission = confirm('Are you sure you want to submit the course?');
+    const confirmSubmission = confirm('Are you sure you want to update this course?');
 
     if (confirmSubmission) {
         // Get the data in review stage
@@ -300,10 +322,9 @@ async function createCourse(e) {
             formData.append('courseImage', courseImage); // Append image file to formData
         }
 
-
         try {
-            const response = await fetch('http://localhost:5000/courses', {
-                method: 'POST',
+            const response = await fetch(`/courses/${courseId}`, {
+                method: 'PATCH',
                 body: formData // Send formData directly
             });
 
@@ -311,7 +332,7 @@ async function createCourse(e) {
 
             if (result.message === 'success') {
                 const successPopup = document.getElementById('success-popup');
-                successPopup.innerText = 'Course created successfully, proceed to add lessons';
+                successPopup.innerText = 'Course updated successfully';
                 successPopup.style.display = 'block';
                 setTimeout(() => {
                     successPopup.style.display = 'none';
@@ -342,7 +363,7 @@ async function createCourse(e) {
 }
 
 const submitButton = document.getElementById('submit-course-btn');
-submitButton.addEventListener('click', createCourse);
+submitButton.addEventListener('click', updateCourse);
 
 
 
