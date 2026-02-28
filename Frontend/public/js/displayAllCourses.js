@@ -48,6 +48,10 @@ async function displayAllCourses() {
             createdDateDiv.className = 'course-created-date';
             createdDateDiv.innerText = `Date created: ${new Date(course.createdAt).toLocaleDateString()}`;
 
+            const createPriceDiv = document.createElement('div');
+            createPriceDiv.className = 'course-price';
+            createPriceDiv.innerText = `Price: ${course.price}`;
+
             // Buttons for actions
             const actionsDiv = document.createElement('div');
             actionsDiv.className = 'course-actions';  // Add actions div class
@@ -55,9 +59,17 @@ async function displayAllCourses() {
             // Update button
             const openButton = document.createElement('button');
             openButton.className = 'open-button';
-            openButton.innerHTML = '&#x270D; Open Course';  // Pencil icon
+            openButton.innerHTML = '&#x1F4D6; Open Course';
             openButton.onclick = () => {
-                window.location.href = `http://localhost:5000/lessonManagement/index.html?courseId=${course.id}`;
+                const courseData = {
+                    title: course.title,
+                    description: course.description,
+                    status: course.status,
+                    courseId: course.id
+                }
+
+                const courseDataString = encodeURIComponent(JSON.stringify(courseData));
+                window.location.href = `/viewCourse.html?courseData=${courseDataString}`;
             };
 
             // Append buttons to actions div
@@ -66,6 +78,7 @@ async function displayAllCourses() {
             // Append details and actions to the card
             courseCard.appendChild(topicDiv);
             courseCard.appendChild(statusDiv);
+            courseCard.appendChild(createPriceDiv);
             courseCard.appendChild(createdDateDiv);
             courseCard.appendChild(actionsDiv);
 

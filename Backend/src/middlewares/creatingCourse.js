@@ -30,6 +30,7 @@ const validateCourseCreation = (req, res, next) => {
 		return res.status(400).json({ error: `Description must be at most 200 characters long.${description.length}` });
 	}
     if (price < 0 || !Number.isInteger(price)) {
+        console.log('the price is', price);
         return res.status(400).json({ error: 'Price must be a positive number.' });
     }
 

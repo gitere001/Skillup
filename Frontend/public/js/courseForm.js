@@ -218,7 +218,7 @@ nextButton.addEventListener('click', () => {
         canProceed = validateField(
             coursePrice,
             priceMessage,
-            isNaN(coursePrice.value) || coursePrice.value < 0,
+            isNaN(coursePrice.value) || coursePrice.value < 1,
             'Please enter a valid price'
         );
     }

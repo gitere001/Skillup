@@ -210,7 +210,6 @@ nextButton.addEventListener('click', () => {
     else if (currentStep === 1) {
 
         const descriptionMessage = document.getElementById('message-description');
-        courseDescription.value = course.description;
         canProceed = validateField(
             courseDescription,
             descriptionMessage,
@@ -236,7 +235,6 @@ nextButton.addEventListener('click', () => {
     else if (currentStep === 3) {
 
         const priceMessage = document.getElementById('message-price');
-        coursePrice.value = course.price;
         canProceed = validateField(
             coursePrice,
             priceMessage,
@@ -336,7 +334,7 @@ async function updateCourse(e) {
                 successPopup.style.display = 'block';
                 setTimeout(() => {
                     successPopup.style.display = 'none';
-                    window.location.href = '/expertDashboard.html';
+                    window.location.href = `http://localhost:5000/lessonManagement/index.html?courseId=${courseId}`;
                 }, 2000);
             } else {
                 const errorPopup = document.getElementById('error-popup');

@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styling */
+header {
+    padding: 20px; /* Padding inside the header */
+    max-width: 800px;
+    width: 99%; /* Full width with some margin on smaller screens */
+    margin: 50px auto 0; /* Center the header and add top margin */
+    margin-left: 10px;
+
+}
+#back-btn-course {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border: 1px solid #190e0e;
+    padding: 5px;
+    text-decoration: none;
+    background-color: lightblue;
+    border-radius: 5px;
+
+}
+
+#back-btn-course:hover {
+    background-color: rgb(170, 226, 244);
+}
+
+
+/* Course details styling */
+.course-details {
+    text-align: left; /* Center the text in the header */
+}
+
+.course-title {
+    font-size: 24px; /* Title font size */
+    color: black; /* Title color */
+    margin: 0;
+    font-family: 'Abril Fatface', serif;
+}
+
+.course-description {
+    font-size: 16px; /* Description font size */
+    color: black; /* Description color */
+    margin: 5px 0; /* Spacing between paragraphs */
+}
+
+#lessonsList li {
+    margin-bottom: 10px; /* Adds spacing between each lesson */
+  }
+/* Container for navigation and content */
+.main-content {
+    margin-left: 20px; /* Add margin to create space to the left */
+    display: flex;
+    min-height: 100vh;
+}
+.main-content .lessons-nav h2 {
+    /* Add your styles here */
+    color: white; /* Example: Change text color */
+    font-size: 24px; /* Example: Change font size */
+    margin-top: 0;
+}
+
+.lessons-nav {
+    width: 350px; /* Set a fixed width for the navigation bar */
+    background-color: #333333; /* Background color for visibility */
+    padding: 15px; /* Padding inside the nav */
+}
+.lesson-content {
+    position: relative;
+    flex-grow: 1;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: calc(100vh - 100px); /* Adjust height to allow for header and nav */
+
+}
+#lessonsList {
+    list-style: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+}
+#lessonsList a {
+    color: white; /* Change this to your preferred color */
+    text-decoration: underline; /* Optional: remove underline from links */
+}
+
+#lessonsList a:hover {
+    color: wheat; /* Optional: change color on hover */
+}
+.add-lesson-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 5px 10px; /* Some padding */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.add-lesson-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.delete-lesson-button {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text */
+    padding: 5px 10px; /* Some padding */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.delete-lesson-button:hover {
+    background-color: #da190b; /* Darker red on hover */
+}
+video {
+    width: 100%;            /* Make the video take up the full width */
+    height: auto;           /* Maintain the video's aspect ratio */
+    max-height: 100vh;      /* Ensure the video doesn't exceed the viewport height */
+    object-fit: cover;      /* Make sure the video covers the available space */
+}
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column; /* Stack elements vertically on small screens */
+        margin-left: 0; /* Remove left margin */
+        width: 100%; /* Ensure it takes full width */
+    }
+
+    .lessons-nav {
+        width: 100%; /* Set navigation to full width on small screens */
+        padding: 10px; /* Adjust padding */
+    }
+
+    .lesson-content {
+        margin-top: 10px; /* Add margin above the content for spacing */
+        padding: 10px; /* Add padding for better appearance */
+    }
+
+    header {
+        padding: 15px; /* Less padding on smaller screens */
+    }
+
+    .course-title {
+        font-size: 22px; /* Adjust title size */
+    }
+
+    .course-description {
+        font-size: 14px; /* Adjust description size */
+    }
+
+    .course-price {
+        font-size: 16px; /* Adjust price size */
+    }
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson Form</title>
+  <link rel="stylesheet" href="/css/newLesson.css">
+</head>
+<body>
+  <a id="back-btn" style="position: absolute; border: 1px solid black; top: 20px; left: 10px; background-color: white; padding: 10px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold;">&larr; Back</a>
+
+
+
+  <div class="container">
+    <!-- Left side: Form container -->
+    <div class="form-container">
+
+      <div id="message"></div>
+
+      <!-- Step 1: Course Title -->
+      <div class="form-step1 active" id="step-1">
+        <label for="topic">Enter Lesson Title</label>
+        <input type="text" id="lesson-title" name="title" placeholder="Enter Lesson Title" minlength="5" maxlength="70" required>
+		<span class="characters-counter" id="title-counter">70</span>
+		<div id="message-title" class="error-message"></div>
+      </div>
+
+      <!-- Step 2: Course Description -->
+      <div class="form-step2" id="step-2">
+        <label for="description">Enter Lesson Description(optional)</label>
+        <textarea id="lesson-description" name="description" placeholder="Enter Lesson Description" minlength="5" maxlength="200"></textarea>
+		<span class="characters-counter" id="description-counter">200</span>
+		<div id="message-description" class="error-message"></div>
+      </div>
+
+      <!-- Step 3: Category -->
+      <div class="form-step3" id="step-3">
+        <label for="content">Upload Content (PDF or Document)</label>
+        <input type="file" id="lesson-content" name="content" accept=".pdf,.doc,.docx">
+        <button type="button" id="removeContentBtn" class="remove-btn" style="display:none;">remove content</button>
+		    <div id="message-content" class="error-message"></div>
+      </div>
+
+      <!-- Step 4: Price -->
+      <div class="form-step4" id="step-4">
+        <label for="video">Upload Video (MP4)</label>
+        <input type="file" id="lesson-video" name="video" accept=".mp4">
+        <button type="button" id="removeVideoBtn" class="remove-btn" style="display:none;">remove video</button>
+		    <div id="message-video" class="error-message"></div>
+      </div>
+    </div>
+
+  </div>
+  <!-- Step 6: Review and Submit -->
+  <div class="form-step5" id="step-5">
+		<h4>Review and Submit</h4>
+		<div id="review-details">
+			<p><strong>Lesson Title:</strong> <span id="review-lesson-title"></span></p>
+			<p><strong>Lesson Description:</strong> <span id="review-lesson-description"></span></p>
+      <p><strong>Content:</strong> <span id="review-content"></span></p>
+      <p><strong>Video:</strong> <span id="review-video"></span></p>
+		</div>
+		<button type="submit" id="submit-lesson-btn">Submit Lesson</button>
+	</div>
+  <div class="button-container">
+    <button type="button" id="prev-button">Previous</button>
+    <button type="button" id="next-button">Continue</button>
+</div>
+
+
+  </div>
+  <div id="spinner" class="spinner" style="display:none;">
+    <div id="spinner-message" style="display:none;"></div>
+  </div>
+
+  <!-- Success Popup -->
+  <div id="success-popup" class="popup" style="display:none;">
+
+  </div>
+
+  <!-- Error Popup -->
+  <div id="error-popup" class="popup" style="display:none;">
+    <!-- Error message will be dynamically inserted here -->
+  </div>
+  <script src="/js/newLesson.js"></script>
+</body>
+</html>

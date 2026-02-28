@@ -22,38 +22,38 @@ let course;
 
 closeModalBtn.addEventListener('click', closeModal)
 closeTop.addEventListener('click', closeModal)
-lessonForm.addEventListener('submit', addNewLesson)
+// lessonForm.addEventListener('submit', addNewLesson)
 
 
 
-contentInput.addEventListener('change', function() {
-    if (contentInput.files.length > 0) {
-        removeContentBtn.style.display = 'inline'; // Show the button
-    } else {
-        removeContentBtn.style.display = 'none'; // Hide the button if no file is selected
-    }
-});
+// contentInput.addEventListener('change', function() {
+//     if (contentInput.files.length > 0) {
+//         removeContentBtn.style.display = 'inline'; // Show the button
+//     } else {
+//         removeContentBtn.style.display = 'none'; // Hide the button if no file is selected
+//     }
+// });
 
-// Show 'Remove Video' button when a video file is selected
-videoInput.addEventListener('change', function() {
-    if (videoInput.files.length > 0) {
-        removeVideoBtn.style.display = 'inline'; // Show the button
-    } else {
-        removeVideoBtn.style.display = 'none'; // Hide the button if no file is selected
-    }
-});
+// // Show 'Remove Video' button when a video file is selected
+// videoInput.addEventListener('change', function() {
+//     if (videoInput.files.length > 0) {
+//         removeVideoBtn.style.display = 'inline'; // Show the button
+//     } else {
+//         removeVideoBtn.style.display = 'none'; // Hide the button if no file is selected
+//     }
+// });
 
-// Handle 'Remove Content' button click
-removeContentBtn.addEventListener('click', function() {
-    contentInput.value = ''; // Clear the selected content file
-    removeContentBtn.style.display = 'none'; // Hide the button
-});
+// // Handle 'Remove Content' button click
+// removeContentBtn.addEventListener('click', function() {
+//     contentInput.value = ''; // Clear the selected content file
+//     removeContentBtn.style.display = 'none'; // Hide the button
+// });
 
-// Handle 'Remove Video' button click
-removeVideoBtn.addEventListener('click', function() {
-    videoInput.value = ''; // Clear the selected video file
-    removeVideoBtn.style.display = 'none'; // Hide the button
-});
+// // Handle 'Remove Video' button click
+// removeVideoBtn.addEventListener('click', function() {
+//     videoInput.value = ''; // Clear the selected video file
+//     removeVideoBtn.style.display = 'none'; // Hide the button
+// });
 
 function showModal() {
     modal.style.display = 'block';
@@ -138,9 +138,7 @@ addNewLessonButton.addEventListener('click', function () {
         alert('You can only add lessons in draft or rejected status.');
         return;
     }
-
-    // Call showModal function if the status is valid
-    showModal();
+    window.location.href = `/lessonManagement/newLesson.html?courseId=${courseId}`;
 });
 
 
@@ -238,80 +236,88 @@ function submitCourseForReview() {
 
     };
 }
-async function addNewLesson (e) {
-	e.preventDefault(); // Prevent default form submission
+// async function addNewLesson (e) {
+// 	e.preventDefault(); // Prevent default form submission
 
-    const formData = new FormData(lessonForm);
+//     const formData = new FormData(lessonForm);
 
-    // Show the spinner when submission starts
-    document.getElementById('spinner').style.display = 'block';
-    const spinnerMessage = document.getElementById('spinner-message');
-    spinnerMessage.innerText = 'Submitting lesson...';
-    spinnerMessage.style.display = 'block';
-
-
-    try {
-        const response = await fetch(`http://localhost:5000/courses/${courseId}/lessons`, {
-            method: 'POST',
-            body: formData // Send the form data
-        });
-
-        const result = await response.json();
-
-        // Hide the spinner after processing the response
-        document.getElementById('spinner').style.display = 'none';
-        spinnerMessage.style.display = 'none';
-
-        // Check if the network request was successful
-        if (response.ok) {
-            // Check if the result contains a success message or an error message
-            if (result.message) {
-                // Show the success popup
-                const successPopup = document.getElementById('success-popup');
-                successPopup.innerText = 'Lesson added successfully!';
-                successPopup.style.display = 'block'; // Show the popup
-
-                // Close the popup and reset the form after 2 seconds
-                setTimeout(() => {
-                    successPopup.style.display = 'none'; // Hide the popup
-                    closeModal();
-                    lessonForm.reset();
-                    location.reload();
-                }, 2000);
-            } else if (result.error) {
-                const errorPopup = document.getElementById('error-popup');
-                errorPopup.innerText = result.error;
-                errorPopup.style.display = 'block'; // Show the error popup
-                setTimeout(() => {
-                    errorPopup.style.display = 'none'; // Hide the popup
+//     // Show the spinner when submission starts
+//     document.getElementById('spinner').style.display = 'block';
+//     const spinnerMessage = document.getElementById('spinner-message');
+//     spinnerMessage.innerText = 'Submitting lesson...';
+//     spinnerMessage.style.display = 'block';
 
 
-                }, 2000);
-            }
-        } else {
-            console.error('Error adding lesson:', result.error);
-            const errorPopup = document.getElementById('error-popup');
-            errorPopup.innerText = result.error;
-            errorPopup.style.display = 'block'; // Show the error popup
-            setTimeout(() => {
-                errorPopup.style.display = 'none'; // Hide the popup
-            }, 2000);
-        }
-    } catch (error) {
-        // Catch and handle any errors that occur during the fetch request
-        console.error('Fetch error:', error);
-        const errorPopup = document.getElementById('error-popup');
-        errorPopup.innerText = 'An error occurred. Please try again later.';
-        errorPopup.style.display = 'block'; // Show the error popup
-        setTimeout(() => {
-            errorPopup.style.display = 'none'; // Hide the popup
-        }, 2000);
-    }
-}
+//     try {
+//         const response = await fetch(`http://localhost:5000/courses/${courseId}/lessons`, {
+//             method: 'POST',
+//             body: formData // Send the form data
+//         });
+
+//         const result = await response.json();
+
+//         // Hide the spinner after processing the response
+//         document.getElementById('spinner').style.display = 'none';
+//         spinnerMessage.style.display = 'none';
+
+//         // Check if the network request was successful
+//         if (response.ok) {
+//             // Check if the result contains a success message or an error message
+//             if (result.message) {
+//                 // Show the success popup
+//                 const successPopup = document.getElementById('success-popup');
+//                 successPopup.innerText = 'Lesson added successfully!';
+//                 successPopup.style.display = 'block'; // Show the popup
+
+//                 // Close the popup and reset the form after 2 seconds
+//                 setTimeout(() => {
+//                     successPopup.style.display = 'none'; // Hide the popup
+//                     closeModal();
+//                     lessonForm.reset();
+//                     location.reload();
+//                 }, 2000);
+//             } else if (result.error) {
+//                 const errorPopup = document.getElementById('error-popup');
+//                 errorPopup.innerText = result.error;
+//                 errorPopup.style.display = 'block'; // Show the error popup
+//                 setTimeout(() => {
+//                     errorPopup.style.display = 'none'; // Hide the popup
+
+
+//                 }, 2000);
+//             }
+//         } else {
+//             console.error('Error adding lesson:', result.error);
+//             const errorPopup = document.getElementById('error-popup');
+//             errorPopup.innerText = result.error;
+//             errorPopup.style.display = 'block'; // Show the error popup
+//             setTimeout(() => {
+//                 errorPopup.style.display = 'none'; // Hide the popup
+//             }, 2000);
+//         }
+//     } catch (error) {
+//         // Catch and handle any errors that occur during the fetch request
+//         console.error('Fetch error:', error);
+//         const errorPopup = document.getElementById('error-popup');
+//         errorPopup.innerText = 'An error occurred. Please try again later.';
+//         errorPopup.style.display = 'block'; // Show the error popup
+//         setTimeout(() => {
+//             errorPopup.style.display = 'none'; // Hide the popup
+//         }, 2000);
+//     }
+// }
 function viewExistingLessons () {
 	const viewExistingLessonsButton = document.getElementById('viewExistingLessons');
 	viewExistingLessonsButton.onclick = () => {
-		const confirmSubmission = confirm("Are you sure you want to submit this course for review?");
+		const courseData = {
+            title: course.title,
+            description: course.description,
+            status: course.status,
+            courseId: courseId
+        }
+
+        const courseDataString = encodeURIComponent(JSON.stringify(courseData));
+        window.location.href = `/viewCourse.html?courseData=${courseDataString}`;
 	}
 }
 

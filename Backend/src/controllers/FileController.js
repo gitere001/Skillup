@@ -218,7 +218,7 @@ class FileController {
                     const courseImagePath = path.join('/courses', course.id.toString(), uploadedImageName).replace(/\\/g, '/'); // Ensure URL-friendly path
                     await course.update({ courseImagePath });
                 } else {
-                    await course.update({ courseImagePath: defaultImagePath });
+                    await course.update({ courseImagePath: course.courseImagePath });
                 }
 
                 return res.status(201).json({ message: 'success' });
